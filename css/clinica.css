@@ -113,3 +113,19 @@
 .login-nome { font-family: 'Playfair Display', Georgia, serif; font-weight: 600; font-size: 28px; line-height: 1.15; color: #FFFFFF; text-align: center; letter-spacing: 0; }
 .login-caixa h1.login-sistema { font-family: Inter, system-ui, sans-serif; font-weight: 500; font-size: 13px; letter-spacing: .14em; text-transform: uppercase; color: rgba(255, 255, 255, 0.78); margin: 0; }
 .login-tema { font-size: 20px; line-height: 1; color: rgba(255, 255, 255, 0.9); }
+
+/* Menu lateral: selo com o símbolo, nome (Playfair Display) e "Gestão Clínica" (Inter). */
+.menu-marca { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 24px 16px 18px; text-align: center; }
+.menu-selo { width: 72px; height: 72px; border-radius: 50%; background: #FFFFFF; display: grid; place-items: center; box-shadow: 0 4px 12px rgba(0,0,0,.18); margin-bottom: 8px; }
+.menu-selo img { width: 58px; height: 58px; display: block; }
+.menu-nome { font-family: 'Playfair Display', Georgia, serif; font-weight: 600; font-size: 21px; line-height: 1.15; color: #FFFFFF; }
+.menu-sistema { font-family: Inter, system-ui, sans-serif; font-weight: 500; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: rgba(255,255,255,.72); }
+@media (min-width: 769px) and (max-width: 1180px) {
+  .menu-marca { padding: 16px 0 10px; }
+  .menu-selo { width: 52px; height: 52px; margin-bottom: 0; }
+  .menu-selo img { width: 42px; height: 42px; }
+  .menu-nome, .menu-sistema { display: none; }
+}
+
+/* Espaço entre a barra de busca/filtros e os cartões (Pacientes, Objetivos e demais listas). */
+.vista > .cartao + .grade-cartoes { margin-top: 16px; }
