@@ -278,3 +278,12 @@
   .lista-dados dd:last-child { margin-bottom: 0; }
 }
 .rotulo-curto { display: inline-block; min-width: 26px; }
+
+/* iPhone (Safari): campos de data/hora ignoram width:100% e transbordam; aparência nativa desligada resolve. */
+input.campo[type="date"], input.campo[type="time"] {
+  -webkit-appearance: none; appearance: none;
+  display: block; min-width: 0;
+  min-height: 42px; line-height: 20px; text-align: left; background-clip: padding-box;
+}
+input.campo[type="date"]::-webkit-date-and-time-value, input.campo[type="time"]::-webkit-date-and-time-value { text-align: left; margin: 0; min-height: 20px; }
+.reg-topo .rotulo, .rotulo-inline { min-width: 0; }
