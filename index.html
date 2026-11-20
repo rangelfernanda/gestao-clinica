@@ -18,7 +18,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/marca.css?v=4">
   <link rel="stylesheet" href="css/styles.css?v=3">
-  <link rel="stylesheet" href="css/clinica.css?v=11">
+  <link rel="stylesheet" href="css/clinica.css?v=12">
   <script src="js/theme.js?v=1"></script>
 </head>
 <body>
@@ -57,6 +57,10 @@
         <a href="#/painel" data-rota="painel" class="menu-item">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11l8-7 8 7v9H4z"/><path d="M10 20v-5h4v5"/></svg>
           <span>Início</span>
+        </a>
+        <a href="#/dashboard" data-rota="dashboard" class="menu-item">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V12M10 20V6M15 20v-9M20 20V4"/></svg>
+          <span>Dashboard</span>
         </a>
         <a href="#/registrar" data-rota="registrar" class="menu-item">
           <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 8v8M8 12h8"/></svg>
@@ -124,6 +128,7 @@
 
       <main class="conteudo">
         <section id="vista-painel" class="vista" hidden></section>
+        <section id="vista-dashboard" class="vista" hidden></section>
         <section id="vista-registrar" class="vista" hidden></section>
         <section id="vista-pacientes" class="vista" hidden></section>
         <section id="vista-programas" class="vista" hidden></section>
@@ -172,12 +177,13 @@
   <script src="js/api.js?v=1"></script>
   <script src="js/dados.js?v=2"></script>
   <script src="js/formularios.js?v=2"></script>
-  <script src="js/telas.js?v=3"></script>
-  <script src="js/graficos.js?v=1"></script>
+  <script src="js/telas.js?v=4"></script>
+  <script src="js/graficos.js?v=2"></script>
+  <script src="js/dashboard.js?v=1"></script>
   <script src="js/avaliacoes.js?v=1"></script>
   <script src="js/evolucao.js?v=1"></script>
   <script src="js/relatorio.js?v=2"></script>
   <script src="js/registrar.js?v=2"></script>
-  <script src="js/app.js?v=4"></script>
+  <script src="js/app.js?v=5"></script>
 </body>
 </html>

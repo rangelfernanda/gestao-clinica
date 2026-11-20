@@ -189,3 +189,23 @@ function acaoEvolucao(dados, usuario) {
     abc: daSessao('abc', ['categoria_antecedente', 'comportamento_alvo', 'categoria_consequencia'])
   };
 }
+
+/**
+ * Dados enxutos do Dashboard (todos os pacientes): tentativas DTT e comportamentos com data.
+ * Só sessões ativas e só os campos numéricos/categóricos — nenhum texto clínico.
+ */
+function acaoPainel(dados, usuario) {
+  var dataSessao = {};
+  ativos_('sessoes').forEach(function (s) { dataSessao[s.id] = s.data; });
+  function daSessao(nome, campos) {
+    return ativos_(nome).filter(function (x) { return dataSessao[x.sessao_id]; }).map(function (x) {
+      var o = { data: dataSessao[x.sessao_id], paciente_id: x.paciente_id };
+      campos.forEach(function (c) { o[c] = x[c] === undefined || x[c] === null ? '' : x[c]; });
+      return o;
+    });
+  }
+  return {
+    dtt: daSessao('dtt', ['objetivo_id', 'resultado']),
+    comportamentos: daSessao('comportamentos', ['comportamento', 'metodo', 'frequencia'])
+  };
+}

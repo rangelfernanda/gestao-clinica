@@ -233,5 +233,31 @@ teste('popularDemo enche um cadastro vazio e apagarDemo limpa tudo', () => {
   assert.strictEqual(amb2.ss.getSheetByName('db_dtt').getLastRow(), 1);
 });
 
+console.log('Dashboard');
+const amb3 = criarAmbiente({ agora: '2026-11-19T10:00:00-03:00', silencioso: true });
+amb3.rodar('setupPlanilha'); amb3.rodar('popularDemo'); amb3.rodar('criarUsuario', 'fernanda', 'Fernanda', 'teste123');
+const tk3 = amb3.chamar('login', { usuario: 'fernanda', senha: 'teste123' }).data.token;
+teste('painel traz todas as tentativas DTT e comportamentos das sessões ativas', () => {
+  const t = ok(amb3.chamar('carregarTudo', {}, tk3));
+  const p = ok(amb3.chamar('painel', {}, tk3));
+  assert.strictEqual(p.dtt.length, t.sessoes.reduce((s, x) => s + x.n_dtt, 0));
+  assert.strictEqual(p.comportamentos.length, t.sessoes.reduce((s, x) => s + x.n_comportamentos, 0));
+  assert.ok(p.dtt.length > 0 && p.comportamentos.length > 0);
+  assert.ok(p.dtt.every((d) => /^\d{4}-\d{2}-\d{2}$/.test(d.data) && d.paciente_id && d.objetivo_id && d.resultado));
+});
+teste('painel não devolve texto clínico', () => {
+  const p = ok(amb3.chamar('painel', {}, tk3));
+  assert.deepStrictEqual(Object.keys(p.dtt[0]).sort(), ['data', 'objetivo_id', 'paciente_id', 'resultado']);
+  assert.deepStrictEqual(Object.keys(p.comportamentos[0]).sort(), ['comportamento', 'data', 'frequencia', 'metodo', 'paciente_id']);
+});
+teste('painel ignora sessão excluída e exige login', () => {
+  const t = ok(amb3.chamar('carregarTudo', {}, tk3));
+  const alvo = t.sessoes.find((s) => s.n_dtt > 0);
+  ok(amb3.chamar('excluirSessao', { id: alvo.id }, tk3));
+  const p = ok(amb3.chamar('painel', {}, tk3));
+  assert.strictEqual(p.dtt.length, t.sessoes.reduce((s, x) => s + x.n_dtt, 0) - alvo.n_dtt);
+  erro(amb3.chamar('painel', {}), 'SESSAO');
+});
+
 console.log(`\n${passaram} passaram, ${falharam} falharam`);
 process.exit(falharam ? 1 : 0);

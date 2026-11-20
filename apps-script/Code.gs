@@ -43,7 +43,8 @@ function acoes_() {
     obterSessao:     { fn: acaoObterSessao },
     salvarSessao:    { fn: acaoSalvarSessao, escrita: true },
     excluirSessao:   { fn: acaoExcluirSessao, escrita: true },
-    evolucao: { fn: acaoEvolucao },
+    evolucao:        { fn: acaoEvolucao },
+    painel:          { fn: acaoPainel },
     listLog:         { fn: acaoListLog }
   };
 }

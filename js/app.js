@@ -12,6 +12,7 @@
 const ROTA_INICIAL = 'painel';
 const ROTAS = {
   painel: { titulo: 'Início', mostrar: () => telaPainel.mostrar() },
+  dashboard: { titulo: 'Dashboard', mostrar: () => telaDashboard.mostrar() },
   registrar: { titulo: 'Registrar sessão', mostrar: (p, q) => telaRegistrar.mostrar(p, q) },
   pacientes: { titulo: 'Pacientes', mostrar: (p) => telaPacientes.mostrar(p) },
   programas: { titulo: 'Programas', mostrar: () => telaProgramas.mostrar() },

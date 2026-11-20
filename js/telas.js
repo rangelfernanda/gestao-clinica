@@ -74,7 +74,7 @@ const telaPainel = {
     vista.innerHTML = `
       <div class="cab-detalhe">
         <div><h2>Olá, ${esc(nomeCurto)}</h2><div class="sub">${dataBr(d.hoje)}</div></div>
-        <a class="botao botao-primario" href="#/registrar">+ Registrar sessão</a>
+        <div class="cab-botoes"><a class="botao botao-secundario" href="#/dashboard">Dashboard</a><a class="botao botao-primario" href="#/registrar">+ Registrar sessão</a></div>
       </div>
       <div class="cards-resumo cards-4">
         <a class="card-numero card-link" href="#/pacientes"><span class="rotulo-card">Pacientes ativos</span><span class="valor-card">${ativos.length}</span><span class="sub-card">${d.pacientes.length} cadastrados</span></a>
