@@ -1,4 +1,4 @@
-/* Marca: Fernanda Rangel · Psicologia — verde-sálvia #3F5E55 no claro, sálvia clara #A8C5B8 no escuro; Fraunces nos títulos + Inter.
+/* Marca: Fernanda Rangel · Psicologia — verde-sálvia #3F5E55 no claro, sálvia clara #A8C5B8 no escuro; Playfair Display nos títulos + Inter.
    Tokens usados por css/styles.css. --fonte define a família do texto. */
 
 :root {
@@ -75,6 +75,6 @@
   --roxo-fundo: rgba(124, 58, 237, 0.22);    --roxo-texto: #C4B5FD;
   --neutro-fundo: #262C36; --neutro-texto: #9AA3B2;
 }
-h1, h2, h3, .topo h1, .marca-texto { font-family: Fraunces, Georgia, serif; font-weight: 600; letter-spacing: -0.01em; }
+h1, h2, h3, .topo h1, .marca-texto { font-family: 'Playfair Display', Georgia, serif; font-variant-numeric: lining-nums; font-weight: 600; letter-spacing: -0.01em; }
 .botao, .pilula { border-radius: 999px; }
 .avatar { color: #3F5E55; }
