@@ -51,8 +51,8 @@ const telaRelatorio = {
       <div class="cartao no-print">
         <div class="barra-ferramentas">
           <select id="rel-pac" class="campo" aria-label="Paciente">${opcoesSelect(pacientes, e.p)}</select>
-          <label class="rotulo-inline">De <input id="rel-de" class="campo campo-data-curto" type="date" value="${esc(e.de)}"></label>
-          <label class="rotulo-inline">Até <input id="rel-ate" class="campo campo-data-curto" type="date" value="${esc(e.ate)}"></label>
+          <label class="rotulo-inline"><span class="rotulo-curto">De</span><input id="rel-de" class="campo campo-data-curto" type="date" value="${esc(e.de)}"></label>
+          <label class="rotulo-inline"><span class="rotulo-curto">Até</span><input id="rel-ate" class="campo campo-data-curto" type="date" value="${esc(e.ate)}"></label>
           <input id="rel-prof" class="campo" type="text" placeholder="Profissional" value="${esc(prof)}" aria-label="Nome da profissional">
           <input id="rel-crp" class="campo campo-data-curto" type="text" placeholder="CRP 00/00000" value="${esc(this.preferencia('crp'))}" aria-label="CRP">
           <span class="espaco"></span>

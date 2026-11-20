@@ -195,7 +195,7 @@ const telaPacientes = {
         <div><h2>${esc(p.nome_social || p.nome)}</h2>
           <div class="sub">${[p.nome_social ? esc(p.nome) : '', idadeTexto(p.idade), esc(p.id)].filter(Boolean).join(' · ')}</div>
           <div class="linha-pilulas" style="margin-top:6px">${pilula(classeStatus(p.status), p.status)}</div></div>
-        <div class="botoes-linha">
+        <div class="botoes-linha botoes-ficha">
           <a class="botao botao-primario" href="#/registrar?p=${esc(p.id)}">Registrar sessão</a>
           <a class="botao botao-secundario" href="#/evolucao?p=${esc(p.id)}">Evolução</a>
           <a class="botao botao-secundario" href="#/relatorio?p=${esc(p.id)}">Relatório</a>

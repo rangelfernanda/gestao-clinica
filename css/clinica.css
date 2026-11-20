@@ -249,3 +249,32 @@
   .rel-editavel:empty + .rel-linhas { display: block; }
   .rel-secao, .rel-tabela tr, .rel-indicadores, .rel-assinatura, .rel-linhas { break-inside: avoid; }
 }
+
+/* ───────── Ajustes de celular ───────── */
+@media (max-width: 768px) {
+  .topo h1 { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .topo-acoes { flex-shrink: 0; }
+  input.campo[type="date"], input.campo[type="time"] { padding-left: 8px; padding-right: 6px; min-width: 0; }
+  .cab-detalhe > div:first-child { min-width: 0; }
+  .barra-ferramentas .chips { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 6px; }
+  .barra-ferramentas .chip { padding: 6px 4px; white-space: nowrap; }
+  .rotulo-inline { display: flex; align-items: center; gap: 8px; flex: 1 1 100%; min-width: 0; }
+  .rotulo-inline .campo { flex: 1 1 auto; max-width: none; }
+  #rel-prof, #rel-crp { flex-basis: 100%; }
+  .rotulo-inline { white-space: nowrap; }
+  #rel-imprimir { flex: 1 1 100%; justify-content: center; }
+}
+@media (max-width: 480px) {
+  .botoes-ficha { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; width: 100%; }
+  .botoes-ficha > :first-child { grid-column: 1 / -1; }
+  .botoes-ficha .botao { justify-content: center; }
+  .barra-ferramentas select.campo { flex-basis: 100%; }
+  .reg-topo { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .reg-topo .rotulo:nth-child(2) { grid-column: 1 / -1; }
+  .kpi .valor-kpi { font-size: 20px; }
+  .lista-dados { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  .lista-dados dt { font-size: 12.5px; }
+  .lista-dados dd { margin-bottom: 10px; }
+  .lista-dados dd:last-child { margin-bottom: 0; }
+}
+.rotulo-curto { display: inline-block; min-width: 26px; }
