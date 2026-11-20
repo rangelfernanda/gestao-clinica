@@ -31,7 +31,7 @@
 
 /* Barra de progresso de objetivo com marca da meta */
 .barra-meta { position: relative; height: 10px; border-radius: 999px; background: var(--neutro-fundo); overflow: visible; }
-.barra-meta > .preench { position: absolute; inset: 0 auto 0 0; border-radius: 999px; background: var(--primario); }
+.barra-meta > .preench { position: absolute; inset: 0 auto 0 0; border-radius: 999px; background: #22C55E; }
 .barra-meta > .marca-meta { position: absolute; top: -4px; bottom: -4px; width: 2px; background: var(--texto); border-radius: 2px; }
 .barra-meta-legenda { display: flex; justify-content: space-between; font-size: 12px; color: var(--texto-2); font-variant-numeric: tabular-nums; }
 
