@@ -1,0 +1,14 @@
+.playwright-mcp/
+__pycache__/
+*.pyc
+node_modules/
+.DS_Store
+Thumbs.db
+# Nunca publicar: dados reais, senhas, cópias de colagem
+colar/
+dados-reais/
+senha*.txt
+*.xlsx
+*.xlsm
+*.csv
+tests/capturas/

@@ -1,0 +1,107 @@
+/* clinica.css — componentes próprios do sistema da Fernanda (registro de sessão, cartões de paciente, abas). */
+
+@media (max-width: 768px) {
+  .menu-inferior { grid-template-columns: repeat(5, 1fr); }
+  .menu-inferior a { font-size: 10.5px; }
+  .menu-inferior a.menu-inferior-destaque svg { stroke: var(--dourado); width: 24px; height: 24px; }
+}
+
+/* Abas simples (detalhe do paciente, passos da sessão) */
+.abas { display: flex; gap: 6px; overflow-x: auto; margin: 0 0 14px; padding-bottom: 2px; scrollbar-width: none; }
+.abas::-webkit-scrollbar { display: none; }
+.aba { border: 1px solid var(--borda); background: var(--cartao); color: var(--texto-2); border-radius: 999px; padding: 8px 14px; font: 500 14px var(--fonte), sans-serif; cursor: pointer; white-space: nowrap; min-height: 40px; }
+.aba.ativa { background: var(--primario); color: var(--primario-texto); border-color: var(--primario); }
+.aba .contador { font-size: 12px; opacity: .8; margin-left: 4px; }
+
+/* Cabeçalho de detalhe */
+.cab-detalhe { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 12px; justify-content: space-between; margin-bottom: 14px; }
+.cab-detalhe h2 { margin: 0 0 4px; font-size: 24px; }
+.cab-detalhe .sub { color: var(--texto-2); font-size: 14px; }
+.cab-detalhe .botoes-linha { flex-wrap: wrap; }
+
+/* Listas em cartões (pacientes, objetivos) */
+.grade-cartoes { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: 12px; }
+.cartao-item { background: var(--cartao); border: 1px solid var(--borda); border-radius: var(--raio); padding: 16px; display: flex; flex-direction: column; gap: 8px; min-width: 0; box-shadow: var(--sombra); }
+.cartao-item h3 { margin: 0; font-size: 17px; overflow-wrap: anywhere; }
+.cartao-item .meta { color: var(--texto-2); font-size: 13px; display: flex; flex-wrap: wrap; gap: 4px 12px; }
+.cartao-item .botoes-linha { margin-top: auto; padding-top: 4px; flex-wrap: wrap; }
+.cartao-item a.titulo-link { color: inherit; }
+.linha-pilulas { display: flex; flex-wrap: wrap; gap: 6px; }
+
+/* Barra de progresso de objetivo com marca da meta */
+.barra-meta { position: relative; height: 10px; border-radius: 999px; background: var(--neutro-fundo); overflow: visible; }
+.barra-meta > .preench { position: absolute; inset: 0 auto 0 0; border-radius: 999px; background: var(--primario); }
+.barra-meta > .marca-meta { position: absolute; top: -4px; bottom: -4px; width: 2px; background: var(--texto); border-radius: 2px; }
+.barra-meta-legenda { display: flex; justify-content: space-between; font-size: 12px; color: var(--texto-2); font-variant-numeric: tabular-nums; }
+
+/* ───────── Registro de sessão ───────── */
+.reg-topo { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr); gap: 10px; }
+.reg-topo .rotulo { margin: 0; }
+@media (max-width: 768px) { .reg-topo { grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) minmax(0, 1fr); gap: 8px; } .reg-topo .rotulo:first-child { grid-column: 1 / -1; } .reg-topo input[type=time], .reg-topo input[type=date] { padding-left: 8px; padding-right: 6px; } }
+
+.reg-objetivos { display: flex; gap: 8px; overflow-x: auto; padding: 2px 0 6px; scrollbar-width: thin; }
+.reg-obj { flex: 0 0 auto; max-width: 240px; text-align: left; border: 1px solid var(--borda); background: var(--cartao); border-radius: 14px; padding: 10px 12px; cursor: pointer; color: var(--texto); font: 500 13px var(--fonte), sans-serif; }
+.reg-obj small { display: block; color: var(--texto-2); font-size: 12px; margin-top: 2px; }
+.reg-obj.ativo { border-color: var(--primario); box-shadow: 0 0 0 2px var(--primario) inset; }
+.reg-obj .reg-obj-n { float: right; margin-left: 8px; font-variant-numeric: tabular-nums; color: var(--texto-2); }
+
+.dtt-placar { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin: 12px 0; text-align: center; }
+.dtt-placar div { background: var(--neutro-fundo); border-radius: 12px; padding: 8px 4px; }
+.dtt-placar strong { display: block; font-size: 22px; font-variant-numeric: tabular-nums; font-family: Fraunces, Georgia, serif; }
+.dtt-placar span { font-size: 12px; color: var(--texto-2); }
+
+.dtt-botoes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.dtt-btn { min-height: 64px; border-radius: 16px; border: 0; font: 600 16px var(--fonte), sans-serif; cursor: pointer; padding: 8px; color: #fff; touch-action: manipulation; }
+.dtt-btn:active { transform: scale(.97); }
+.dtt-btn small { display: block; font-weight: 500; font-size: 12px; opacity: .85; }
+.dtt-indep { background: #2F7A55; }
+.dtt-ajuda { background: #B7791F; }
+.dtt-erro { background: #B4483B; }
+.dtt-sem { background: #5F6B73; }
+.dtt-anular { background: transparent; color: var(--texto-2); border: 1px dashed var(--borda); grid-column: 1 / -1; min-height: 44px; font-size: 14px; }
+[data-theme="dark"] .dtt-indep { background: #3B8F66; }
+[data-theme="dark"] .dtt-ajuda { background: #A86F1C; }
+[data-theme="dark"] .dtt-erro { background: #A9473B; }
+
+.nivel-ajuda { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.nivel-ajuda button { border: 1px solid var(--borda); background: var(--cartao); color: var(--texto); border-radius: 999px; padding: 8px 12px; font: 500 13px var(--fonte), sans-serif; cursor: pointer; min-height: 40px; }
+.nivel-ajuda button.ativo { background: var(--ambar-fundo); border-color: var(--ambar); color: var(--ambar-texto); }
+
+.dtt-trilha { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 12px; }
+.dtt-trilha .bolinha { width: 26px; height: 26px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; color: #fff; border: 0; cursor: pointer; }
+.bolinha.r-indep { background: #2F7A55; } .bolinha.r-ajuda { background: #B7791F; } .bolinha.r-erro { background: #B4483B; }
+.bolinha.r-sem { background: #5F6B73; } .bolinha.r-anulada { background: transparent; color: var(--texto-2); border: 1px dashed var(--texto-2); }
+
+/* Contador de comportamento */
+.cmp-item { border: 1px solid var(--borda); border-radius: 14px; padding: 12px; display: grid; gap: 10px; }
+.cmp-cab { display: flex; justify-content: space-between; gap: 8px; align-items: flex-start; }
+.cmp-cab strong { overflow-wrap: anywhere; }
+.contador-grande { display: flex; align-items: center; justify-content: center; gap: 18px; }
+.contador-grande button { width: 56px; height: 56px; border-radius: 50%; border: 1px solid var(--borda); background: var(--cartao); color: var(--texto); font-size: 26px; cursor: pointer; touch-action: manipulation; }
+.contador-grande button.mais { background: var(--primario); color: var(--primario-texto); border-color: var(--primario); }
+.contador-grande output { font: 600 36px Fraunces, Georgia, serif; min-width: 64px; text-align: center; font-variant-numeric: tabular-nums; }
+.cmp-campos { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+@media (max-width: 480px) { .cmp-campos { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+
+.reg-rodape { position: sticky; bottom: 0; z-index: 5; background: var(--fundo); padding: 10px 0 calc(10px + var(--sa-bottom)); display: flex; gap: 10px; align-items: center; border-top: 1px solid var(--borda); margin-top: 16px; }
+.reg-rodape .espaco { flex: 1; }
+.reg-rodape .resumo { font-size: 13px; color: var(--texto-2); }
+@media (max-width: 768px) {
+  .reg-rodape { bottom: calc(64px + var(--sa-bottom)); padding-top: 8px; padding-bottom: 8px; }
+  .reg-rodape .resumo { display: none; }   /* as abas já mostram os contadores */
+  .reg-rodape .botao-primario { flex: 1; }
+}
+
+.aviso-rascunho { background: var(--azul-fundo); color: var(--azul-texto); border-radius: 12px; padding: 10px 14px; font-size: 14px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 12px; }
+.aviso-rascunho .espaco { flex: 1; }
+
+.lista-mini { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.lista-mini li { display: flex; justify-content: space-between; gap: 10px; align-items: center; border-bottom: 1px solid var(--borda); padding-bottom: 8px; font-size: 14px; }
+.lista-mini li:last-child { border-bottom: 0; padding-bottom: 0; }
+.lista-mini .txt { min-width: 0; overflow-wrap: anywhere; }
+.lista-mini small { display: block; color: var(--texto-2); }
+
+.texto-longo { white-space: pre-wrap; overflow-wrap: anywhere; }
+
+.rotulo-check { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--texto-2); cursor: pointer; }
+.rotulo-check input { width: 18px; height: 18px; accent-color: var(--primario); }

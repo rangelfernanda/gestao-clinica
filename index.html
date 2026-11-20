@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Gestão Clínica · Fernanda Rangel</title>
+  <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#3F5E55">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Clínica">
+  <link rel="icon" href="assets/favicon.png?v=3" type="image/png">
+  <link rel="apple-touch-icon" href="assets/icone-180.png?v=3">
+  <link rel="manifest" href="manifest.json">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/marca.css?v=2">
+  <link rel="stylesheet" href="css/styles.css?v=2">
+  <link rel="stylesheet" href="css/clinica.css?v=2">
+  <script src="js/theme.js?v=1"></script>
+</head>
+<body>
+
+  <!-- ───────── Login ───────── -->
+  <main id="tela-login" class="login" hidden>
+    <form id="form-login" class="login-caixa" novalidate>
+      <span class="marca-texto">Fernanda Rangel</span>
+      <h1>Gestão Clínica</h1>
+      <label class="rotulo">Usuário
+        <input id="login-usuario" class="campo" type="text" autocomplete="username" autocapitalize="none" spellcheck="false" required>
+      </label>
+      <label class="rotulo">Senha
+        <input id="login-senha" class="campo" type="password" autocomplete="current-password" required>
+      </label>
+      <button id="login-botao" class="botao botao-primario botao-largo" type="submit">Entrar</button>
+      <p id="login-aviso" class="aviso-erro" hidden></p>
+      <button class="botao-fantasma login-tema" type="button" data-acao="alternar-tema" aria-label="Alternar tema">
+        <span class="icone-sol" aria-hidden="true">☀</span><span class="icone-lua" aria-hidden="true">☾</span>
+      </button>
+    </form>
+  </main>
+
+  <!-- ───────── Aplicação ───────── -->
+  <div id="tela-app" class="app" hidden>
+    <aside class="menu" aria-label="Menu principal">
+      <div class="menu-logo">
+        <span class="marca-texto">Fernanda Rangel</span>
+        <span class="marca-texto marca-simbolo">F</span>
+      </div>
+      <nav class="menu-itens">
+        <a href="#/painel" data-rota="painel" class="menu-item">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11l8-7 8 7v9H4z"/><path d="M10 20v-5h4v5"/></svg>
+          <span>Início</span>
+        </a>
+        <a href="#/registrar" data-rota="registrar" class="menu-item">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 8v8M8 12h8"/></svg>
+          <span>Registrar sessão</span>
+        </a>
+        <a href="#/pacientes" data-rota="pacientes" class="menu-item">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c1-4 4-6 7-6s6 2 7 6"/></svg>
+          <span>Pacientes</span>
+        </a>
+        <a href="#/programas" data-rota="programas" class="menu-item">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h11l3 3v13H5z"/><path d="M9 10h7M9 14h7M9 18h4"/></svg>
+          <span>Programas</span>
+        </a>
+        <a href="#/objetivos" data-rota="objetivos" class="menu-item">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1"/></svg>
+          <span>Objetivos</span>
+        </a>
+        <a href="#/sessoes" data-rota="sessoes" class="menu-item">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/></svg>
+          <span>Sessões</span>
+        </a>
+        <a href="#/historico" data-rota="historico" class="menu-item">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 12a8.5 8.5 0 1 0 2.5-6"/><path d="M3 4v4h4M12 7.5V12l3 2"/></svg>
+          <span>Histórico</span>
+        </a>
+      </nav>
+      <div class="menu-rodape">
+        <span class="avatar" id="menu-avatar" aria-hidden="true"></span>
+        <div class="menu-usuario">
+          <strong id="menu-nome"></strong>
+          <button type="button" class="link-claro" data-acao="sair">Sair</button>
+        </div>
+      </div>
+    </aside>
+
+    <div class="principal">
+      <header class="topo">
+        <h1 id="topo-titulo"></h1>
+        <div class="topo-acoes">
+          <button class="botao-icone" type="button" data-acao="atualizar" aria-label="Recarregar dados" title="Recarregar dados">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 1 1-2.6-6.4"/><path d="M21 3v6h-6"/></svg>
+          </button>
+          <button class="botao-icone" type="button" data-acao="alternar-tema" aria-label="Alternar tema">
+            <span class="icone-sol" aria-hidden="true">☀</span><span class="icone-lua" aria-hidden="true">☾</span>
+          </button>
+          <span class="topo-usuario">
+            <span class="avatar avatar-pequeno" id="topo-avatar" aria-hidden="true"></span>
+            <span id="topo-nome"></span>
+          </span>
+          <button class="botao botao-secundario botao-sair" type="button" data-acao="sair">Sair</button>
+        </div>
+      </header>
+
+      <main class="conteudo">
+        <section id="vista-painel" class="vista" hidden></section>
+        <section id="vista-registrar" class="vista" hidden></section>
+        <section id="vista-pacientes" class="vista" hidden></section>
+        <section id="vista-programas" class="vista" hidden></section>
+        <section id="vista-objetivos" class="vista" hidden></section>
+        <section id="vista-sessoes" class="vista" hidden></section>
+        <section id="vista-historico" class="vista" hidden></section>
+      </main>
+    </div>
+
+    <nav class="menu-inferior" aria-label="Menu">
+      <a href="#/painel" data-rota="painel"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11l8-7 8 7v9H4z"/><path d="M10 20v-5h4v5"/></svg><span>Início</span></a>
+      <a href="#/pacientes" data-rota="pacientes"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c1-4 4-6 7-6s6 2 7 6"/></svg><span>Pacientes</span></a>
+      <a href="#/registrar" data-rota="registrar" class="menu-inferior-destaque"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 8v8M8 12h8"/></svg><span>Registrar</span></a>
+      <a href="#/sessoes" data-rota="sessoes"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/></svg><span>Sessões</span></a>
+      <a href="#/objetivos" data-rota="objetivos"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1"/></svg><span>Objetivos</span></a>
+    </nav>
+  </div>
+
+  <!-- ───────── Modal genérico ───────── -->
+  <div id="modal" class="modal" hidden>
+    <div class="modal-fundo" data-acao="fechar-modal"></div>
+    <div class="modal-caixa" role="dialog" aria-modal="true" aria-labelledby="modal-titulo">
+      <header class="modal-topo">
+        <h2 id="modal-titulo"></h2>
+        <button class="botao-icone" type="button" data-acao="fechar-modal" aria-label="Fechar">✕</button>
+      </header>
+      <div id="modal-corpo" class="modal-corpo"></div>
+    </div>
+  </div>
+
+  <div id="dialogo-confirma" class="modal modal-confirma" hidden>
+    <div class="modal-fundo"></div>
+    <div class="modal-caixa" role="alertdialog" aria-modal="true"></div>
+  </div>
+
+  <div id="toasts" class="toasts" aria-live="polite"></div>
+
+  <!-- Ao mudar um arquivo, suba o ?v= dele: o celular guarda a versão velha em cache. -->
+  <script src="js/config.js?v=1"></script>
+  <script src="js/utils.js?v=1"></script>
+  <script src="js/calculos.js?v=1"></script>
+  <script src="js/api.js?v=1"></script>
+  <script src="js/dados.js?v=1"></script>
+  <script src="js/formularios.js?v=2"></script>
+  <script src="js/telas.js?v=1"></script>
+  <script src="js/registrar.js?v=2"></script>
+  <script src="js/app.js?v=3"></script>
+</body>
+</html>

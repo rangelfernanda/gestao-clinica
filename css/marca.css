@@ -1,0 +1,80 @@
+/* Marca: Fernanda Rangel · Psicologia — verde-sálvia #3F5E55 no claro, sálvia clara #A8C5B8 no escuro; Fraunces nos títulos + Inter.
+   Tokens usados por css/styles.css. --fonte define a família do texto. */
+
+:root {
+  --fonte: Inter;
+  --marinho: #3F5E55;
+  --dourado: #A8C5B8;
+
+  --fundo: #F5F6F3;
+  --cartao: #FFFFFF;
+  --borda: #E6E8EC;
+  --texto: #1A1A1F;
+  --texto-2: #5F6470;
+  --menu: #2F4842;
+  --menu-texto: #FFFFFF;
+  --menu-texto-2: rgba(255, 255, 255, 0.7);
+  --menu-hover: rgba(255, 255, 255, 0.08);
+  --primario: #3F5E55;
+  --primario-texto: #FFFFFF;
+  --primario-hover: #4C7065;
+  --campo-fundo: #FFFFFF;
+  --sombra: 0 1px 2px rgba(0, 0, 0, 0.05), 0 4px 12px rgba(0, 0, 0, 0.04);
+  --grafico-previsto: #3F5E55;
+  --grafico-recebido: #16A34A;
+  --grade: #E6E8EC;
+  --skeleton-a: #EEF0F3;
+  --skeleton-b: #F7F8FA;
+  --linha-atrasada: #FEF2F2;
+  --linha-hover: #F7F8FA;
+
+  --vermelho: #DC2626; --vermelho-fundo: #FEE2E2; --vermelho-texto: #991B1B;
+  --ambar: #D97706;    --ambar-fundo: #FEF3C7;    --ambar-texto: #92400E;
+  --verde: #16A34A;    --verde-fundo: #DCFCE7;    --verde-texto: #166534;
+  --azul: #2563EB;     --azul-fundo: #DBEAFE;     --azul-texto: #1E40AF;
+  --roxo: #7C3AED;     --roxo-fundo: #EDE9FE;     --roxo-texto: #5B21B6;
+  --neutro-fundo: #EEF0F3; --neutro-texto: #475569;
+
+  --raio: 18px;
+  --raio-p: 8px;
+  --menu-largura: 240px;
+
+  --sa-top: env(safe-area-inset-top, 0px);
+  --sa-bottom: env(safe-area-inset-bottom, 0px);
+  --sa-left: env(safe-area-inset-left, 0px);
+  --sa-right: env(safe-area-inset-right, 0px);
+}
+
+[data-theme="dark"] {
+  --fundo: #0F1311;
+  --cartao: #18201D;
+  --borda: #28322E;
+  --texto: #EEF1F6;
+  --texto-2: #9AA3B2;
+  --menu: #0C110F;
+  --menu-texto: #FFFFFF;
+  --menu-texto-2: rgba(240, 240, 245, 0.65);
+  --menu-hover: rgba(255, 255, 255, 0.06);
+  --primario: #A8C5B8;
+  --primario-texto: #0E1116;
+  --primario-hover: #C2D8CE;
+  --campo-fundo: #12161C;
+  --sombra: 0 1px 2px rgba(0, 0, 0, 0.3), 0 4px 14px rgba(0, 0, 0, 0.25);
+  --grafico-previsto: #A8C5B8;
+  --grafico-recebido: #16A34A;
+  --grade: #262C36;
+  --skeleton-a: #262C36;
+  --skeleton-b: #171B22;
+  --linha-atrasada: rgba(220, 38, 38, 0.12);
+  --linha-hover: #262C36;
+
+  --vermelho-fundo: rgba(220, 38, 38, 0.18); --vermelho-texto: #FCA5A5;
+  --ambar-fundo: rgba(217, 119, 6, 0.2);     --ambar-texto: #FCD34D;
+  --verde-fundo: rgba(22, 163, 74, 0.2);     --verde-texto: #86EFAC;
+  --azul-fundo: rgba(37, 99, 235, 0.22);     --azul-texto: #93C5FD;
+  --roxo-fundo: rgba(124, 58, 237, 0.22);    --roxo-texto: #C4B5FD;
+  --neutro-fundo: #262C36; --neutro-texto: #9AA3B2;
+}
+h1, h2, h3, .topo h1, .marca-texto { font-family: Fraunces, Georgia, serif; font-weight: 600; letter-spacing: -0.01em; }
+.botao, .pilula { border-radius: 999px; }
+.avatar { color: #3F5E55; }
