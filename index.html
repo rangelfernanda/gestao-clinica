@@ -15,10 +15,10 @@
   <link rel="manifest" href="manifest.json?v=4">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Playfair+Display:wght@600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/marca.css?v=2">
   <link rel="stylesheet" href="css/styles.css?v=2">
-  <link rel="stylesheet" href="css/clinica.css?v=2">
+  <link rel="stylesheet" href="css/clinica.css?v=3">
   <script src="js/theme.js?v=1"></script>
 </head>
 <body>
@@ -26,8 +26,11 @@
   <!-- ───────── Login ───────── -->
   <main id="tela-login" class="login" hidden>
     <form id="form-login" class="login-caixa" novalidate>
-      <span class="marca-texto">Fernanda Rangel</span>
-      <h1>Gestão Clínica</h1>
+      <div class="login-marca">
+        <span class="login-selo"><img src="assets/logo.png?v=1" alt="" width="104" height="104"></span>
+        <span class="login-nome">Fernanda Rangel</span>
+        <h1 class="login-sistema">Gestão Clínica</h1>
+      </div>
       <label class="rotulo">Usuário
         <input id="login-usuario" class="campo" type="text" autocomplete="username" autocapitalize="none" spellcheck="false" required>
       </label>

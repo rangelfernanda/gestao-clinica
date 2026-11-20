@@ -105,3 +105,11 @@
 
 .rotulo-check { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--texto-2); cursor: pointer; }
 .rotulo-check input { width: 18px; height: 18px; accent-color: var(--primario); }
+
+/* Login: logo num selo branco + nome (Playfair Display) + "Gestão Clínica" (Inter). */
+.login-marca { display: flex; flex-direction: column; align-items: center; gap: 6px; margin-bottom: 6px; }
+.login-selo { width: 128px; height: 128px; border-radius: 50%; background: #FFFFFF; display: grid; place-items: center; box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18); margin-bottom: 8px; }
+.login-selo img { width: 104px; height: 104px; display: block; }
+.login-nome { font-family: 'Playfair Display', Georgia, serif; font-weight: 600; font-size: 28px; line-height: 1.15; color: #FFFFFF; text-align: center; letter-spacing: 0; }
+.login-caixa h1.login-sistema { font-family: Inter, system-ui, sans-serif; font-weight: 500; font-size: 13px; letter-spacing: .14em; text-transform: uppercase; color: rgba(255, 255, 255, 0.78); margin: 0; }
+.login-tema { font-size: 20px; line-height: 1; color: rgba(255, 255, 255, 0.9); }
