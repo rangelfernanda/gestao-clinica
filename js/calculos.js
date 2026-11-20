@@ -111,9 +111,70 @@
     return anos;
   }
 
+  /** Dias entre duas datas yyyy-mm-dd (b - a). */
+  function dias(a, b) {
+    function t(x) { var p = String(x).split('-').map(Number); return Date.UTC(p[0], p[1] - 1, p[2]); }
+    return Math.round((t(b) - t(a)) / 86400000);
+  }
+
+  /**
+   * Alerta de reavaliação: 'REAVALIAÇÃO ATRASADA' (data já passou), 'REAVALIAÇÃO PRÓXIMA' (até 30 dias) ou ''.
+   * Avaliação suspensa não gera alerta.
+   */
+  function alertaAvaliacao(av, hoje) {
+    var data = av && av.proxima_avaliacao;
+    if (vazio(data) || !hoje || (av.status || '') === 'Suspensa') return '';
+    var d = dias(hoje, data);
+    if (d < 0) return 'REAVALIAÇÃO ATRASADA';
+    if (d <= 30) return 'REAVALIAÇÃO PRÓXIMA';
+    return '';
+  }
+
+  /** Série por sessão de um objetivo: [{data, sessao_id, resultado}] -> [{data, sessao_id, validas, pct_indep, pct_acerto}]. */
+  function serieObjetivo(tentativas) {
+    var grupos = {}, ordem = [];
+    (tentativas || []).forEach(function (t) {
+      if (!t || vazio(t.data)) return;
+      var chave = t.data + '|' + (t.sessao_id || '');
+      if (!grupos[chave]) { grupos[chave] = { data: t.data, sessao_id: t.sessao_id || '', lista: [] }; ordem.push(chave); }
+      grupos[chave].lista.push(t);
+    });
+    return ordem.map(function (k) {
+      var g = grupos[k], r = resumoDtt(g.lista);
+      return { data: g.data, sessao_id: g.sessao_id, validas: r.validas, pct_indep: r.pctIndep, pct_acerto: r.pctAcerto };
+    }).filter(function (p) { return p.validas > 0; })
+      .sort(function (a, b) { return a.data < b.data ? -1 : a.data > b.data ? 1 : (a.sessao_id < b.sessao_id ? -1 : 1); });
+  }
+
+  /**
+   * Série por data de um comportamento: [{data, frequencia, duracao_total, latencia, tempo_observado}]
+   * -> [{data, frequencia, duracao, latencia, tempo, taxa_hora, n}] (somas por dia; latência = média).
+   */
+  function serieComportamento(registros) {
+    var porData = {};
+    (registros || []).forEach(function (c) {
+      if (!c || vazio(c.data)) return;
+      var p = porData[c.data] = porData[c.data] || { data: c.data, frequencia: null, duracao: null, latencia: null, tempo: null, taxa_hora: null, n: 0, _lat: [] };
+      var f = num(c.frequencia), d = num(c.duracao_total), l = num(c.latencia), t = num(c.tempo_observado);
+      if (f !== null) p.frequencia = (p.frequencia || 0) + f;
+      if (d !== null) p.duracao = (p.duracao || 0) + d;
+      if (t !== null) p.tempo = (p.tempo || 0) + t;
+      if (l !== null) p._lat.push(l);
+      p.n++;
+    });
+    return Object.keys(porData).sort().map(function (k) {
+      var p = porData[k];
+      if (p._lat.length) p.latencia = p._lat.reduce(function (a, b) { return a + b; }, 0) / p._lat.length;
+      if (p.frequencia !== null && p.tempo) p.taxa_hora = p.frequencia / p.tempo * 60;
+      delete p._lat;
+      return p;
+    });
+  }
+
   return {
     RESULTADOS: RESULTADOS, resumoDtt: resumoDtt, conferenciaAjuda: conferenciaAjuda,
     metricasObjetivo: metricasObjetivo, metricasComportamento: metricasComportamento,
-    duracaoHoras: duracaoHoras, idade: idade
+    duracaoHoras: duracaoHoras, idade: idade, dias: dias,
+    alertaAvaliacao: alertaAvaliacao, serieObjetivo: serieObjetivo, serieComportamento: serieComportamento
   };
 });

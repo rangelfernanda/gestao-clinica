@@ -71,7 +71,17 @@ function popularDemo() {
       }
     });
     acaoSalvarSessao({ sessao: { paciente_id: pac[1], data: diasAtras(-3), inicio: '14:00', termino: '14:50', status: 'Agendada', modalidade: 'Presencial' } }, u);
-    return 'Dados de exemplo carregados: 3 pacientes fictícios, 4 programas, 6 objetivos e 21 sessões.';
+    [
+      [0, 'VB-MAPP', 'Nível 2', diasAtras(100), 'Reavaliação prevista', diasAtras(-20), 'Mando, tato, ouvinte, imitação'],
+      [1, 'Avaliação de habilidades', '', diasAtras(190), 'Concluída', diasAtras(10), 'Imitação, brincar, social'],
+      [2, 'Vineland', '3ª edição', diasAtras(-15), 'Planejada', '', 'Comunicação, vida diária, socialização']
+    ].forEach(function (a) {
+      acaoSalvar({ entidade: 'avaliacoes', registro: { paciente_id: pac[a[0]], instrumento: a[1], versao: a[2], data_aplicacao: a[3],
+        profissional: 'Profissional Demo', status: a[4], proxima_avaliacao: a[5], dominios: a[6],
+        objetivo: 'Avaliação fictícia para demonstração.', resultados: a[4] === 'Planejada' ? '' : 'Resumo ilustrativo (sem itens do instrumento).',
+        referencia_documento: 'Pasta do paciente (exemplo)' } }, u);
+    });
+    return 'Dados de exemplo carregados: 3 pacientes fictícios, 4 programas, 6 objetivos, 21 sessões e 3 avaliações.';
   });
 }
 

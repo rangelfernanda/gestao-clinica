@@ -152,6 +152,23 @@ function entidades_() {
         { campo: 'hipotese', rotulo: 'Hipótese funcional', tipo: 'longo' },
         { campo: 'observacoes', rotulo: 'Observações', tipo: 'longo' }
       ]
+    },
+    avaliacoes: {
+      aba: 'db_avaliacoes', prefixo: 'AVA-', digitos: 4, rotulo: 'Avaliação', plural: 'Avaliações', titulo: 'instrumento',
+      campos: [
+        { campo: 'paciente_id', rotulo: 'Paciente', tipo: 'ref', ref: 'pacientes', obrig: true },
+        { campo: 'instrumento', rotulo: 'Instrumento', tipo: 'lista', lista: 'INSTRUMENTOS', obrig: true },
+        { campo: 'versao', rotulo: 'Versão / nível', tipo: 'texto', max: 60 },
+        { campo: 'data_aplicacao', rotulo: 'Data da aplicação', tipo: 'data', obrig: true },
+        { campo: 'profissional', rotulo: 'Profissional', tipo: 'texto', max: 120 },
+        { campo: 'status', rotulo: 'Status', tipo: 'lista', lista: 'STATUS AVALIAÇÃO', obrig: true, padrao: 'Planejada' },
+        { campo: 'proxima_avaliacao', rotulo: 'Próxima avaliação', tipo: 'data' },
+        { campo: 'dominios', rotulo: 'Domínios avaliados', tipo: 'texto', max: 300 },
+        { campo: 'objetivo', rotulo: 'Objetivo da avaliação', tipo: 'longo' },
+        { campo: 'resultados', rotulo: 'Resultados autorizados', tipo: 'longo' },
+        { campo: 'observacoes', rotulo: 'Observações clínicas', tipo: 'longo' },
+        { campo: 'referencia_documento', rotulo: 'Referência segura ao documento', tipo: 'texto', max: 200 }
+      ]
     }
   };
 }

@@ -1,8 +1,9 @@
 /* clinica.css — componentes próprios do sistema da Fernanda (registro de sessão, cartões de paciente, abas). */
 
 @media (max-width: 768px) {
-  .menu-inferior { grid-template-columns: repeat(5, 1fr); }
-  .menu-inferior a { font-size: 10.5px; }
+  .menu-inferior { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  .menu-inferior a { font-size: 10px; padding-left: 2px; padding-right: 2px; min-width: 0; }
+  .menu-inferior a span { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .menu-inferior a.menu-inferior-destaque svg { stroke: var(--dourado); width: 24px; height: 24px; }
 }
 
@@ -104,6 +105,9 @@
 .texto-longo { white-space: pre-wrap; overflow-wrap: anywhere; }
 
 .rotulo-check { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--texto-2); cursor: pointer; }
+.evo-obj-titulo { font: 600 19px Fraunces, Georgia, serif; margin: 2px 0 2px; color: var(--texto); }
+.evo-abc { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 16px; }
+.rotulo-inline { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: var(--texto-2); }
 .rotulo-check input { width: 18px; height: 18px; accent-color: var(--primario); }
 
 /* Login: logo num selo branco + nome (Playfair Display) + "Gestão Clínica" (Inter). */
@@ -129,3 +133,119 @@
 
 /* Espaço entre a barra de busca/filtros e os cartões (Pacientes, Objetivos e demais listas). */
 .vista > .cartao + .grade-cartoes { margin-top: 16px; }
+
+/* ───────── Fase 2: gráficos (cores de série validadas no claro #FFF e no escuro #18201D) ───────── */
+:root { --serie-1: #2a78d6; --serie-2: #eb6834; }
+[data-theme="dark"] { --serie-1: #3987e5; --serie-2: #d95926; }
+
+.graf-topo { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; margin-bottom: 8px; }
+.graf-titulo { font-weight: 600; font-size: 15px; }
+.graf-btn-tabela { margin-left: auto; }
+.graf-legenda { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 13px; color: var(--texto-2); }
+.graf-legenda span { display: inline-flex; align-items: center; gap: 6px; }
+.graf-cor { display: inline-block; width: 12px; height: 4px; border-radius: 2px; background: var(--serie-1); vertical-align: middle; margin-right: 6px; }
+.graf-legenda .graf-cor { margin-right: 0; }
+.graf-cor.s2 { background: var(--serie-2); }
+.graf-area { position: relative; width: 100%; min-width: 0; }
+.graf-svg { display: block; overflow: visible; touch-action: pan-y; }
+.graf-grade { stroke: var(--grade); stroke-width: 1; }
+.graf-base { stroke: var(--borda); stroke-width: 1; }
+[data-theme="dark"] .graf-base { stroke: #3A4541; }
+.graf-eixo { fill: var(--texto-2); font: 400 11px var(--fonte), sans-serif; font-variant-numeric: tabular-nums; }
+.graf-linha { fill: none; stroke: var(--serie-1); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+.graf-linha.s2 { stroke: var(--serie-2); }
+.graf-linha.fina { stroke-width: 1.75; }
+.graf-ponto { fill: var(--serie-1); stroke: var(--cartao); stroke-width: 2; }
+.graf-ponto.s2 { fill: var(--serie-2); }
+.graf-ponto-fim { fill: var(--serie-1); }
+.graf-barra { fill: var(--serie-1); }
+.graf-destaque { fill: var(--texto); opacity: .06; }
+.graf-ref-meta { stroke: var(--texto-2); stroke-width: 1.5; stroke-dasharray: 6 4; }
+.graf-ref-meta.fina { stroke-width: 1; stroke-dasharray: 3 3; opacity: .7; }
+.graf-ref-base { stroke: var(--texto-2); stroke-width: 1.5; stroke-dasharray: 2 3; }
+.graf-ref-rotulo { fill: var(--texto-2); font: 500 11px var(--fonte), sans-serif; paint-order: stroke; stroke: var(--cartao); stroke-width: 3px; stroke-linejoin: round; }
+.graf-rotulo-direto { fill: var(--texto); font: 600 12px var(--fonte), sans-serif; font-variant-numeric: tabular-nums; }
+.graf-guia { stroke: var(--texto-2); stroke-width: 1; stroke-dasharray: 3 3; }
+.graf-dica { position: absolute; z-index: 3; pointer-events: none; background: var(--cartao); color: var(--texto); border: 1px solid var(--borda); box-shadow: var(--sombra); border-radius: 10px; padding: 8px 10px; font-size: 12.5px; line-height: 1.45; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.graf-dica b { display: block; margin-bottom: 2px; }
+.graf-dica strong { margin-left: 4px; }
+.graf-tabela-caixa { margin-top: 10px; }
+.sparkline { display: block; overflow: visible; }
+
+/* Evolução */
+.chips { display: inline-flex; gap: 4px; flex-wrap: wrap; }
+.chip { border: 1px solid var(--borda); background: var(--cartao); color: var(--texto-2); border-radius: 999px; padding: 6px 12px; font: 500 13px var(--fonte), sans-serif; cursor: pointer; min-height: 36px; }
+.chip.ativo { background: var(--primario); color: var(--primario-texto); border-color: var(--primario); }
+.campo-data-curto { width: auto; min-width: 0; max-width: 165px; }
+.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr)); gap: 10px; }
+.kpi { background: var(--cartao); border: 1px solid var(--borda); border-radius: 14px; padding: 12px 14px; min-width: 0; }
+.kpi .rotulo-kpi { display: block; font-size: 12px; color: var(--texto-2); }
+.kpi .valor-kpi { display: block; font: 600 24px Fraunces, Georgia, serif; font-variant-numeric: tabular-nums; margin-top: 2px; }
+.kpi .sub-kpi { display: block; font-size: 12px; color: var(--texto-2); }
+.tabela tr.selecionavel { cursor: pointer; }
+.tabela tr.selecionada td { background: var(--linha-hover); }
+.tabela tr.selecionada td.principal-cel strong { color: var(--primario); }
+.f2 > * + * { margin-top: 14px; }
+.f2 .cartao > .barra-ferramentas:last-child { margin-bottom: 0; }
+@media (max-width: 768px) {
+  .barra-ferramentas .chips { width: 100%; }
+  .campo-data-curto { max-width: none; flex: 1 1 130px; }
+}
+
+/* Avaliações */
+.nota-aviso { background: var(--ambar-fundo); color: var(--ambar-texto); border-radius: 12px; padding: 10px 14px; font-size: 13.5px; }
+
+/* ───────── Relatório (folha A4, sempre clara) ───────── */
+.rel-folha { background: #FFFFFF; color: #1A1A1F; max-width: 210mm; margin: 14px auto 0; padding: 18mm 16mm; border-radius: 6px; box-shadow: 0 2px 16px rgba(0,0,0,.12); font-size: 12.5px; line-height: 1.5;
+  --cartao: #FFFFFF; --texto: #1A1A1F; --texto-2: #5F6470; --borda: #DADDE2; --grade: #E6E8EC; --neutro-fundo: #EEF0F3; --serie-1: #2a78d6; --serie-2: #eb6834; --primario: #3F5E55; --linha-hover: #F3F5F2; }
+.rel-folha h2, .rel-folha h3 { color: #1A1A1F; }
+.rel-cab { display: flex; align-items: center; gap: 14px; border-bottom: 2px solid #3F5E55; padding-bottom: 10px; margin-bottom: 14px; }
+.rel-cab img { width: 56px; height: 56px; }
+.rel-cab .rel-nome { display: block; font-family: "Playfair Display", Georgia, serif; font-size: 20px; font-weight: 600; }
+.rel-cab .rel-sub { display: block; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: #5F6470; }
+.rel-titulo { text-align: center; margin: 4px 0 2px; font: 600 16px Inter, sans-serif; letter-spacing: .06em; }
+.rel-subtitulo { text-align: center; color: #5F6470; font-size: 11.5px; margin: 0 0 14px; }
+.rel-secao { margin: 16px 0 6px; font: 600 13px Inter, sans-serif; text-transform: uppercase; letter-spacing: .06em; color: #3F5E55; border-bottom: 1px solid #DADDE2; padding-bottom: 3px; break-after: avoid; }
+.rel-ident { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2px 18px; margin: 0; }
+.rel-ident div { display: flex; gap: 6px; min-width: 0; }
+.rel-ident dt { color: #5F6470; white-space: nowrap; }
+.rel-ident dd { margin: 0; font-weight: 500; overflow-wrap: anywhere; }
+.rel-indicadores { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.rel-indicadores div { border: 1px solid #DADDE2; border-radius: 8px; padding: 6px 10px; }
+.rel-indicadores span { display: block; color: #5F6470; font-size: 11px; }
+.rel-indicadores strong { font: 600 18px Fraunces, Georgia, serif; font-variant-numeric: tabular-nums; }
+.rel-tabela-rolagem { overflow-x: auto; }
+.rel-tabela { width: 100%; border-collapse: collapse; font-size: 11.5px; }
+.rel-tabela th { text-align: left; font-weight: 600; color: #5F6470; border-bottom: 1px solid #C9CDD3; padding: 4px 6px; }
+.rel-tabela td { border-bottom: 1px solid #E6E8EC; padding: 5px 6px; vertical-align: middle; }
+.rel-tabela .num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.rel-tabela tr { break-inside: avoid; }
+.rel-editavel { min-height: 70px; border: 1px dashed #C9CDD3; border-radius: 6px; padding: 8px 10px; white-space: pre-wrap; outline: none; }
+.rel-editavel:focus { border-color: #3F5E55; }
+.rel-editavel:empty::before { content: attr(data-dica); color: #8A909B; }
+.rel-linhas { display: none; height: 64px; background: repeating-linear-gradient(transparent 0 20px, #C9CDD3 20px 21px); }
+.rel-assinatura { margin-top: 40px; display: flex; justify-content: center; }
+.rel-assinatura div { text-align: center; min-width: 280px; border-top: 1px solid #1A1A1F; padding-top: 6px; }
+.rel-rodape { margin-top: 18px; color: #5F6470; font-size: 10.5px; border-top: 1px solid #E6E8EC; padding-top: 6px; }
+.rel-vazio { color: #5F6470; font-style: italic; margin: 0; }
+@media (max-width: 768px) {
+  .rel-folha { padding: 18px 14px; border-radius: 12px; }
+  .rel-ident, .rel-indicadores { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .rel-ident div { flex-direction: column; gap: 0; }
+}
+
+@page { size: A4; margin: 14mm; }
+@media print {
+  html, body { background: #FFFFFF !important; }
+  .menu, .topo, .menu-inferior, .toasts, .modal, .no-print, .voltar { display: none !important; }
+  .app, .principal { display: block !important; }
+  .conteudo { padding: 0 !important; max-width: none !important; }
+  .rel-folha { box-shadow: none; margin: 0; padding: 0; max-width: none; border-radius: 0; font-size: 10.5pt; }
+  .rel-ident div { flex-direction: row; gap: 6px; }
+  .rel-ident { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .rel-indicadores { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .rel-editavel { border-color: transparent; padding-left: 0; min-height: 0; }
+  .rel-editavel:empty { display: none; }
+  .rel-editavel:empty + .rel-linhas { display: block; }
+  .rel-secao, .rel-tabela tr, .rel-indicadores, .rel-assinatura, .rel-linhas { break-inside: avoid; }
+}

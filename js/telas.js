@@ -68,6 +68,7 @@ const telaPainel = {
     const ativos = d.pacientes.filter((p) => p.status === 'Ativo');
     const doMes = d.sessoes.filter((s) => s.data.slice(0, 7) === mes && s.status === 'Realizada');
     const alertas = d.objetivos.filter((o) => o.alerta);
+    const alertasAva = (d.avaliacoes || []).filter((a) => a.alerta);
     const agendadas = d.sessoes.filter((s) => s.status === 'Agendada' && s.data >= d.hoje).sort((a, b) => (a.data < b.data ? -1 : 1));
     const nomeCurto = (d.usuario.nome || '').split(' ')[0];
     vista.innerHTML = `
@@ -84,7 +85,7 @@ const telaPainel = {
       <div class="detalhe-grade">
         <div class="cartao">
           <h3 class="secao-titulo">Precisa de atenção</h3>
-          ${alertas.length ? `<ul class="lista-mini">${alertas.map((o) => `<li><span class="txt">${esc(o.objetivo)}<small>${esc(dados.nome('pacientes', o.paciente_id))}</small></span>${pilula(classeAlerta(o.alerta), o.alerta)}</li>`).join('')}</ul>` : '<p class="vazio">Nenhum objetivo em alerta.</p>'}
+          ${alertas.length || alertasAva.length ? `<ul class="lista-mini">${alertasAva.map((a) => `<li><span class="txt"><a href="#/avaliacoes?p=${esc(a.paciente_id)}">${esc(a.instrumento)}</a><small>${esc(dados.nome('pacientes', a.paciente_id))} · reavaliação ${a.proxima_avaliacao ? dataBr(a.proxima_avaliacao) : ''}</small></span>${pilula(classeAlerta(a.alerta), a.alerta)}</li>`).join('')}${alertas.map((o) => `<li><span class="txt"><a href="#/evolucao?p=${esc(o.paciente_id)}&o=${esc(o.id)}">${esc(o.objetivo)}</a><small>${esc(dados.nome('pacientes', o.paciente_id))}</small></span>${pilula(classeAlerta(o.alerta), o.alerta)}</li>`).join('')}</ul>` : '<p class="vazio">Nada pendente agora.</p>'}
         </div>
         <div class="cartao">
           <h3 class="secao-titulo">Últimas sessões</h3>
@@ -153,7 +154,8 @@ const telaPacientes = {
     const programas = dados.lista('programas').filter((x) => x.paciente_id === id);
     const objetivos = dados.lista('objetivos').filter((x) => x.paciente_id === id);
     const sessoes = dados.lista('sessoes').filter((x) => x.paciente_id === id);
-    const abas = [['resumo', 'Resumo', ''], ['programas', 'Programas', programas.length], ['objetivos', 'Objetivos', objetivos.length], ['sessoes', 'Sessões', sessoes.length]];
+    const avaliacoes = dados.lista('avaliacoes').filter((x) => x.paciente_id === id);
+    const abas = [['resumo', 'Resumo', ''], ['programas', 'Programas', programas.length], ['objetivos', 'Objetivos', objetivos.length], ['sessoes', 'Sessões', sessoes.length], ['avaliacoes', 'Avaliações', avaliacoes.length]];
     let corpo = '';
     if (this.aba === 'resumo') {
       corpo = `<div class="detalhe-grade">
@@ -181,6 +183,9 @@ const telaPacientes = {
     } else if (this.aba === 'objetivos') {
       corpo = `<div class="barra-ferramentas"><span class="espaco"></span><button class="botao botao-primario" type="button" id="fic-novo-obj">+ Novo objetivo</button></div>
         ${objetivos.length ? `<div class="grade-cartoes">${objetivos.map((o) => cartaoObjetivo(o, { semPaciente: true })).join('')}</div>` : '<div class="cartao"><p class="vazio">Nenhum objetivo ainda.</p></div>'}`;
+    } else if (this.aba === 'avaliacoes') {
+      corpo = `<div class="barra-ferramentas"><span class="espaco"></span><button class="botao botao-primario" type="button" id="fic-nova-ava">+ Nova avaliação</button></div>
+        ${avaliacoes.length ? `<div class="grade-cartoes">${avaliacoes.map((a) => cartaoAvaliacao(a, { semPaciente: true })).join('')}</div>` : '<div class="cartao"><p class="vazio">Nenhuma avaliação registrada.</p></div>'}`;
     } else {
       corpo = `<div class="cartao">${tabelaSessoes(sessoes, { semPaciente: true })}</div>`;
     }
@@ -192,6 +197,8 @@ const telaPacientes = {
           <div class="linha-pilulas" style="margin-top:6px">${pilula(classeStatus(p.status), p.status)}</div></div>
         <div class="botoes-linha">
           <a class="botao botao-primario" href="#/registrar?p=${esc(p.id)}">Registrar sessão</a>
+          <a class="botao botao-secundario" href="#/evolucao?p=${esc(p.id)}">Evolução</a>
+          <a class="botao botao-secundario" href="#/relatorio?p=${esc(p.id)}">Relatório</a>
           <button class="botao botao-secundario" type="button" id="fic-editar">Editar</button>
           <button class="botao botao-perigo" type="button" id="fic-excluir">Excluir</button>
         </div>
@@ -218,6 +225,9 @@ const telaPacientes = {
       if (await excluirEntidade('programas', b.dataset.excluirProg)) this.recarregar();
     }));
     ligarBotoesObjetivo(vista, () => this.recarregar());
+    const novaAva = el('fic-nova-ava');
+    if (novaAva) novaAva.addEventListener('click', async () => { if (await formularioEntidade('avaliacoes', {}, { fixos: { paciente_id: id } })) this.recarregar(); });
+    ligarBotoesAvaliacao(vista, () => this.recarregar(), { paciente_id: id });
   },
 };
 

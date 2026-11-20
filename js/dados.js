@@ -10,13 +10,14 @@ const dados = {
 
   async carregar(forcar) {
     if (this.cache && !forcar) return this.cache;
+    if (forcar && typeof evoCache !== 'undefined') evoCache.clear();
     if (!this.promessa) {
       this.promessa = api('carregarTudo').then((d) => { this.cache = d; return d; }).finally(() => { this.promessa = null; });
     }
     return this.promessa;
   },
 
-  invalidar() { this.cache = null; },
+  invalidar() { this.cache = null; if (typeof evoCache !== 'undefined') evoCache.clear(); },
 
   lista(entidade) { return (this.cache && this.cache[entidade]) || []; },
   achar(entidade, id) { return this.lista(entidade).find((r) => r.id === id) || null; },
@@ -36,15 +37,15 @@ const dados = {
 function classeStatus(valor) {
   const v = String(valor || '');
   if (/^(Ativo|Realizada|Dominado|Concluíd|Em manutenção|Em generalização|Alta)/.test(v)) return 'st-pago';
-  if (/^(Em aquisição|Em intervenção|Linha de base|Agendada|Reposição|Planejad|Em processo)/.test(v)) return 'st-vencer';
+  if (/^(Em aquisição|Em intervenção|Linha de base|Agendada|Reposição|Planejad|Em processo|Em aplicação|Reavaliação prevista)/.test(v)) return 'st-vencer';
   if (/^(Pausad|Suspens|Não iniciado)/.test(v)) return 'st-breve';
   if (/^(Cancelada|Falta|Encerrad|Inativo)/.test(v)) return 'st-neutro';
   return 'st-neutro';
 }
 
 function classeAlerta(alerta) {
-  if (alerta === 'REVISÃO ATRASADA') return 'st-atrasado';
-  if (alerta === 'AVALIAR PROGRESSO') return 'st-breve';
+  if (alerta === 'REVISÃO ATRASADA' || alerta === 'REAVALIAÇÃO ATRASADA') return 'st-atrasado';
+  if (alerta === 'AVALIAR PROGRESSO' || alerta === 'REAVALIAÇÃO PRÓXIMA') return 'st-breve';
   return 'st-neutro';
 }
 

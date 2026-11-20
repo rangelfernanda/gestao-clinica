@@ -60,5 +60,40 @@ teste('duração da sessão e idade', () => {
   assert.strictEqual(C.idade('2017-11-20', '2026-11-19'), 8);
 });
 
+console.log('Fase 2: avaliações e séries');
+teste('alerta de reavaliação', () => {
+  const h = '2026-11-19';
+  assert.strictEqual(C.alertaAvaliacao({ proxima_avaliacao: '2026-11-18', status: 'Concluída' }, h), 'REAVALIAÇÃO ATRASADA');
+  assert.strictEqual(C.alertaAvaliacao({ proxima_avaliacao: '2026-11-19' }, h), 'REAVALIAÇÃO PRÓXIMA');
+  assert.strictEqual(C.alertaAvaliacao({ proxima_avaliacao: '2026-12-19' }, h), 'REAVALIAÇÃO PRÓXIMA');
+  assert.strictEqual(C.alertaAvaliacao({ proxima_avaliacao: '2026-12-20' }, h), '');
+  assert.strictEqual(C.alertaAvaliacao({ proxima_avaliacao: '2026-01-01', status: 'Suspensa' }, h), '');
+  assert.strictEqual(C.alertaAvaliacao({ status: 'Planejada' }, h), '');
+});
+teste('série do objetivo: uma ponta por sessão, em ordem, sem anuladas', () => {
+  const s = C.serieObjetivo([
+    { data: '2026-11-10', sessao_id: 'S2', resultado: 'Acerto independente' },
+    { data: '2026-11-03', sessao_id: 'S1', resultado: 'Erro' },
+    { data: '2026-11-10', sessao_id: 'S2', resultado: 'Acerto com ajuda' },
+    { data: '2026-11-03', sessao_id: 'S1', resultado: 'Acerto independente' },
+    { data: '2026-11-10', sessao_id: 'S2', resultado: 'Tentativa anulada' },
+    { data: '2026-11-12', sessao_id: 'S3', resultado: 'Tentativa anulada' }
+  ]);
+  assert.deepStrictEqual(s.map((p) => p.data), ['2026-11-03', '2026-11-10']);
+  assert.deepStrictEqual([s[0].validas, s[0].pct_indep, s[0].pct_acerto], [2, 0.5, 0.5]);
+  assert.deepStrictEqual([s[1].validas, s[1].pct_indep, s[1].pct_acerto], [2, 0.5, 1]);
+});
+teste('série do comportamento: soma por dia, taxa por hora e latência média', () => {
+  const s = C.serieComportamento([
+    { data: '2026-11-10', frequencia: 4, tempo_observado: 30, latencia: 10 },
+    { data: '2026-11-03', frequencia: 6, tempo_observado: 50 },
+    { data: '2026-11-10', frequencia: '2', tempo_observado: 30, latencia: 20 }
+  ]);
+  assert.deepStrictEqual(s.map((p) => p.data), ['2026-11-03', '2026-11-10']);
+  assert.strictEqual(s[1].frequencia, 6); assert.strictEqual(s[1].tempo, 60);
+  perto(s[1].taxa_hora, 6, 'taxa/h'); perto(s[0].taxa_hora, 7.2, 'taxa/h');
+  assert.strictEqual(s[1].latencia, 15); assert.strictEqual(s[0].latencia, null);
+});
+
 console.log(`\n${passaram} passaram, ${falharam} falharam`);
 process.exit(falharam ? 1 : 0);

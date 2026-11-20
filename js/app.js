@@ -17,6 +17,9 @@ const ROTAS = {
   programas: { titulo: 'Programas', mostrar: () => telaProgramas.mostrar() },
   objetivos: { titulo: 'Objetivos', mostrar: (p) => telaObjetivos.mostrar(p) },
   sessoes: { titulo: 'Sessões', mostrar: (p) => telaSessoes.mostrar(p) },
+  evolucao: { titulo: 'Evolução', mostrar: (p, q) => telaEvolucao.mostrar(p, q) },
+  avaliacoes: { titulo: 'Avaliações', mostrar: (p, q) => telaAvaliacoes.mostrar(p, q) },
+  relatorio: { titulo: 'Relatório', mostrar: (p, q) => telaRelatorio.mostrar(p, q) },
   historico: { titulo: 'Histórico', mostrar: () => telaHistorico.mostrar() },
 };
 

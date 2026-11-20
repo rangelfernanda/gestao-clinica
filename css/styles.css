@@ -520,7 +520,7 @@ select.campo { appearance: auto; }
 }
 /* Menu inferior com 6 itens no celular: rótulos menores. */
 @media (max-width: 768px) {
-  .menu-inferior { grid-template-columns: repeat(6, 1fr); }
+  .menu-inferior { grid-template-columns: repeat(6, minmax(0, 1fr)); }
   .menu-inferior a { font-size: 10px; padding: 6px 1px; letter-spacing: -.1px; }
   .menu-inferior svg { width: 19px; height: 19px; }
 }

@@ -152,6 +152,40 @@ function acaoCarregarTudo(dados, usuario) {
         n_dtt: d.length, pct_indep: r.pctIndep, pct_acerto: r.pctAcerto,
         n_comportamentos: (cmpPorSessao[s.id] || []).length, n_abc: (abcPorSessao[s.id] || []).length
       });
-    }).sort(function (a, b) { return a.data < b.data ? 1 : a.data > b.data ? -1 : (a.id < b.id ? 1 : -1); })
+    }).sort(function (a, b) { return a.data < b.data ? 1 : a.data > b.data ? -1 : (a.id < b.id ? 1 : -1); }),
+    avaliacoes: ativos_('avaliacoes').map(function (a) {
+      return Object.assign(publico_(a), { alerta: Calculos.alertaAvaliacao(a, hoje) });
+    }).sort(function (a, b) { return a.data_aplicacao < b.data_aplicacao ? 1 : a.data_aplicacao > b.data_aplicacao ? -1 : 0; })
+  };
+}
+
+/**
+ * Dados enxutos para os gráficos de evolução e o relatório de um paciente.
+ * dados: {paciente_id, de?, ate?} (yyyy-mm-dd). Só sessões ativas; sem textos clínicos longos.
+ */
+function acaoEvolucao(dados, usuario) {
+  var pid = texto_(dados && dados.paciente_id);
+  if (!pid) falha_('Escolha o paciente.');
+  var de = texto_(dados.de), ate = texto_(dados.ate);
+  var dataSessao = {};
+  ativos_('sessoes').forEach(function (s) {
+    if (s.paciente_id !== pid) return;
+    if (de && s.data < de) return;
+    if (ate && s.data > ate) return;
+    dataSessao[s.id] = s.data;
+  });
+  function daSessao(nome, campos) {
+    return ativos_(nome).filter(function (x) { return dataSessao[x.sessao_id]; }).map(function (x) {
+      var o = { sessao_id: x.sessao_id, data: dataSessao[x.sessao_id] };
+      campos.forEach(function (c) { o[c] = x[c] === undefined || x[c] === null ? '' : x[c]; });
+      return o;
+    });
+  }
+  return {
+    paciente_id: pid, de: de, ate: ate,
+    sessoes: Object.keys(dataSessao).length,
+    dtt: daSessao('dtt', ['objetivo_id', 'resultado', 'nivel_ajuda']),
+    comportamentos: daSessao('comportamentos', ['comportamento', 'metodo', 'frequencia', 'duracao_total', 'latencia', 'tempo_observado', 'linha_base_freq']),
+    abc: daSessao('abc', ['categoria_antecedente', 'comportamento_alvo', 'categoria_consequencia'])
   };
 }

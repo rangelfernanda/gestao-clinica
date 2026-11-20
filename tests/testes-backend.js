@@ -16,7 +16,7 @@ const erro = (r, trecho) => {
 
 const amb = criarAmbiente({ agora: '2026-11-19T10:00:00-03:00', silencioso: true });
 const { ss } = amb;
-const ABAS = ['db_pacientes', 'db_programas', 'db_objetivos', 'db_sessoes', 'db_dtt', 'db_comportamentos', 'db_abc', 'db_usuarios', 'db_log', 'cfg_listas'];
+const ABAS = ['db_pacientes', 'db_programas', 'db_objetivos', 'db_sessoes', 'db_dtt', 'db_comportamentos', 'db_abc', 'db_avaliacoes', 'db_usuarios', 'db_log', 'cfg_listas'];
 
 console.log('Instalação');
 teste('setupPlanilha cria todas as abas', () => {
@@ -129,6 +129,17 @@ teste('carregarTudo calcula % do objetivo, alertas e indicadores da sessão', ()
   assert.ok(t.listas['RESULTADO DTT'].includes('Tentativa anulada'));
   assert.ok(t.esquema.pacientes.campos.length > 5);
 });
+teste('evolucao devolve dados enxutos do paciente, filtrados por período', () => {
+  const e = ok(amb.chamar('evolucao', { paciente_id: pac1 }, token));
+  assert.strictEqual(e.sessoes, 1);
+  assert.strictEqual(e.dtt.length, 20);
+  assert.deepStrictEqual(Object.keys(e.dtt[0]).sort(), ['data', 'nivel_ajuda', 'objetivo_id', 'resultado', 'sessao_id']);
+  assert.strictEqual(e.comportamentos[0].frequencia, 8);
+  assert.ok(!('antecedente' in e.abc[0]), 'texto clínico longo não vai para o gráfico');
+  assert.strictEqual(ok(amb.chamar('evolucao', { paciente_id: pac1, de: '2026-11-19' }, token)).dtt.length, 0);
+  assert.strictEqual(ok(amb.chamar('evolucao', { paciente_id: pac2 }, token)).dtt.length, 0);
+  erro(amb.chamar('evolucao', {}, token), 'paciente');
+});
 teste('erro em uma tentativa não grava nada e diz qual é', () => {
   const antes = ss.getSheetByName('db_dtt').getLastRow();
   erro(amb.chamar('salvarSessao', { sessao: { paciente_id: pac2, data: '2026-11-18' }, dtt: [{ objetivo_id: obj1, resultado: 'Erro' }] }, token), 'Tentativa DTT nº 1');
@@ -173,6 +184,25 @@ teste('excluir paciente é suave e fica no log', () => {
   assert.ok(ss.getSheetByName('db_log').rows.some((l) => l[2] === 'excluir' && l[4] === pac2));
 });
 
+console.log('Avaliações');
+teste('avaliação: id AVA-0001, status padrão e alerta de reavaliação', () => {
+  const id = ok(salvar('avaliacoes', { paciente_id: pac1, instrumento: 'VB-MAPP', data_aplicacao: '2026-08-01', proxima_avaliacao: '2026-11-01' })).id;
+  assert.strictEqual(id, 'AVA-0001');
+  ok(salvar('avaliacoes', { paciente_id: pac1, instrumento: 'Vineland', data_aplicacao: '2026-10-01', proxima_avaliacao: '2026-12-10', status: 'Concluída' }));
+  const t = ok(amb.chamar('carregarTudo', {}, token));
+  assert.strictEqual(t.avaliacoes.length, 2);
+  assert.strictEqual(t.avaliacoes[0].instrumento, 'Vineland', 'mais recente primeiro');
+  assert.strictEqual(t.avaliacoes[0].alerta, 'REAVALIAÇÃO PRÓXIMA');
+  assert.strictEqual(t.avaliacoes[1].alerta, 'REAVALIAÇÃO ATRASADA');
+  assert.strictEqual(t.avaliacoes[1].status, 'Planejada');
+  assert.ok(t.esquema.avaliacoes.campos.some((c) => c.campo === 'resultados'));
+});
+teste('avaliação valida instrumento e paciente', () => {
+  erro(salvar('avaliacoes', { paciente_id: pac1, instrumento: 'Teste inventado', data_aplicacao: '2026-08-01' }), 'fora da lista');
+  erro(salvar('avaliacoes', { paciente_id: 'PAC-9999', instrumento: 'VB-MAPP', data_aplicacao: '2026-08-01' }));
+  erro(salvar('avaliacoes', { paciente_id: pac1, instrumento: 'VB-MAPP' }));
+});
+
 console.log('Lista editável pela Fernanda');
 teste('opção nova na cfg_listas passa a valer', () => {
   const aba = ss.getSheetByName('cfg_listas');
@@ -193,11 +223,13 @@ teste('popularDemo enche um cadastro vazio e apagarDemo limpa tudo', () => {
   assert.strictEqual(t.pacientes.length, 3);
   assert.strictEqual(t.objetivos.length, 6);
   assert.strictEqual(t.sessoes.length, 21);
+  assert.strictEqual(t.avaliacoes.length, 3);
+  assert.deepStrictEqual(t.avaliacoes.map((a) => a.alerta).sort(), ['', 'REAVALIAÇÃO ATRASADA', 'REAVALIAÇÃO PRÓXIMA']);
   assert.ok(t.pacientes.every((p) => /Fictício/.test(p.nome)));
   assert.throws(() => amb2.rodar('popularDemo'), /Já existem/);
   amb2.rodar('apagarDemo');
   const t2 = ok(amb2.chamar('carregarTudo', {}, tk));
-  assert.strictEqual(t2.pacientes.length + t2.sessoes.length + t2.objetivos.length, 0);
+  assert.strictEqual(t2.pacientes.length + t2.sessoes.length + t2.objetivos.length + t2.avaliacoes.length, 0);
   assert.strictEqual(amb2.ss.getSheetByName('db_dtt').getLastRow(), 1);
 });
 
