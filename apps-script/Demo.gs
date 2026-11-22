@@ -30,7 +30,7 @@ function popularDemo() {
     ];
     var objetivos = [];
     planos.forEach(function (pl) {
-      var proId = acaoSalvar({ entidade: 'programas', registro: { paciente_id: pac[pl[0]], nome: pl[1], area: pl[2], procedimento: 'DTT',
+      var proId = acaoSalvar({ entidade: 'programas', registro: { nome: pl[1], area: pl[2], procedimento: 'DTT',
         data_inicio: diasAtras(110), data_revisao: diasAtras(-60), profissional: 'Profissional Demo', status: 'Ativo',
         criterio_aquisicao: '≥ 80% em 3 sessões' } }, u).id;
       pl[3].forEach(function (o, i) {

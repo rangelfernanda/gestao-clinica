@@ -151,7 +151,7 @@ const telaPacientes = {
     const p = dados.achar('pacientes', id);
     if (!p) { vista.innerHTML = '<div class="cartao"><p class="vazio">Paciente não encontrado.</p><a href="#/pacientes">Voltar</a></div>'; return; }
     el('topo-titulo').textContent = p.nome_social || p.nome;
-    const programas = dados.lista('programas').filter((x) => x.paciente_id === id);
+    const programas = dados.programasDoPaciente(id);
     const objetivos = dados.lista('objetivos').filter((x) => x.paciente_id === id);
     const sessoes = dados.lista('sessoes').filter((x) => x.paciente_id === id);
     const avaliacoes = dados.lista('avaliacoes').filter((x) => x.paciente_id === id);
@@ -165,7 +165,7 @@ const telaPacientes = {
           ${!p.informacoes && !p.observacoes ? '<p class="vazio">Nada anotado.</p>' : ''}
         </div></div>`;
     } else if (this.aba === 'programas') {
-      corpo = `<div class="barra-ferramentas"><span class="espaco"></span><button class="botao botao-primario" type="button" id="fic-novo-prog">+ Novo programa</button></div>
+      corpo = `<div class="barra-ferramentas"><span class="nota">Programas usados nos objetivos deste paciente.</span><span class="espaco"></span><button class="botao botao-primario" type="button" id="fic-novo-obj">+ Novo objetivo</button></div>
         ${programas.length ? `<div class="grade-cartoes">${programas.map((g) => {
           const objs = objetivos.filter((o) => o.programa_id === g.id);
           return `<article class="cartao-item">
@@ -176,10 +176,9 @@ const telaPacientes = {
             <div class="meta"><span>${objs.length} ${objs.length === 1 ? 'objetivo' : 'objetivos'}</span></div>
             <div class="botoes-linha">
               <button class="botao botao-secundario botao-pequeno" type="button" data-novo-obj="${esc(g.id)}">+ Objetivo</button>
-              <button class="botao botao-secundario botao-pequeno" type="button" data-editar-prog="${esc(g.id)}">Editar</button>
-              <button class="botao botao-perigo botao-pequeno" type="button" data-excluir-prog="${esc(g.id)}">Excluir</button>
+              <button class="botao botao-secundario botao-pequeno" type="button" data-editar-prog="${esc(g.id)}">Editar programa</button>
             </div></article>`;
-        }).join('')}</div>` : '<div class="cartao"><p class="vazio">Nenhum programa ainda.</p></div>'}`;
+        }).join('')}</div>` : '<div class="cartao"><p class="vazio">Nenhum programa ainda. Crie um objetivo e escolha o programa.</p></div>'}`;
     } else if (this.aba === 'objetivos') {
       corpo = `<div class="barra-ferramentas"><span class="espaco"></span><button class="botao botao-primario" type="button" id="fic-novo-obj">+ Novo objetivo</button></div>
         ${objetivos.length ? `<div class="grade-cartoes">${objetivos.map((o) => cartaoObjetivo(o, { semPaciente: true })).join('')}</div>` : '<div class="cartao"><p class="vazio">Nenhum objetivo ainda.</p></div>'}`;
@@ -211,18 +210,13 @@ const telaPacientes = {
     el('fic-excluir').addEventListener('click', async () => {
       if (await excluirEntidade('pacientes', id, 'Programas e sessões dele continuam na planilha.')) location.hash = '#/pacientes';
     });
-    const novoProg = el('fic-novo-prog');
-    if (novoProg) novoProg.addEventListener('click', async () => { if (await formularioEntidade('programas', {}, { fixos: { paciente_id: id } })) this.recarregar(); });
     const novoObj = el('fic-novo-obj');
     if (novoObj) novoObj.addEventListener('click', async () => { if (await formularioEntidade('objetivos', {}, { fixos: { paciente_id: id } })) this.recarregar(); });
     vista.querySelectorAll('[data-novo-obj]').forEach((b) => b.addEventListener('click', async () => {
       if (await formularioEntidade('objetivos', { programa_id: b.dataset.novoObj }, { fixos: { paciente_id: id } })) this.recarregar();
     }));
     vista.querySelectorAll('[data-editar-prog]').forEach((b) => b.addEventListener('click', async () => {
-      if (await formularioEntidade('programas', dados.achar('programas', b.dataset.editarProg), { fixos: { paciente_id: id } })) this.recarregar();
-    }));
-    vista.querySelectorAll('[data-excluir-prog]').forEach((b) => b.addEventListener('click', async () => {
-      if (await excluirEntidade('programas', b.dataset.excluirProg)) this.recarregar();
+      if (await formularioEntidade('programas', dados.achar('programas', b.dataset.editarProg))) this.recarregar();
     }));
     ligarBotoesObjetivo(vista, () => this.recarregar());
     const novaAva = el('fic-nova-ava');
@@ -233,8 +227,9 @@ const telaPacientes = {
 
 // ───────────────────────────── Programas ─────────────────────────────
 
+// Programas são um banco compartilhado; o paciente se liga a eles pelos objetivos.
 const telaProgramas = {
-  filtro: { paciente: '', status: '' },
+  filtro: { paciente: '', status: '', busca: '' },
 
   async mostrar() {
     const vista = el('vista-programas');
@@ -245,20 +240,28 @@ const telaProgramas = {
 
   renderizar() {
     const vista = el('vista-programas');
-    const itens = dados.lista('programas').filter((g) => (!this.filtro.paciente || g.paciente_id === this.filtro.paciente) && (!this.filtro.status || g.status === this.filtro.status));
+    const f = this.filtro;
+    const doPaciente = f.paciente ? new Set(dados.programasDoPaciente(f.paciente).map((g) => g.id)) : null;
+    const busca = semAcento(f.busca);
+    const itens = dados.lista('programas').filter((g) => (!doPaciente || doPaciente.has(g.id)) && (!f.status || g.status === f.status) &&
+      (!busca || semAcento(`${g.nome} ${g.area} ${g.dominio} ${g.habilidade_alvo} ${g.objetivo}`).includes(busca)));
     const pacientes = dados.lista('pacientes').map((p) => ({ valor: p.id, rotulo: p.nome_social || p.nome }));
+    const emUso = (g) => dados.pacientesDoPrograma(g.id)
+      .map((pid) => `<a href="#/pacientes/${esc(pid)}">${esc(dados.nome('pacientes', pid))}</a>`).join(', ') || '—';
     vista.innerHTML = `<div class="cartao">
       <div class="barra-ferramentas">
-        <select id="prog-pac" class="campo" aria-label="Paciente">${opcoesSelect(pacientes, this.filtro.paciente, 'Todos os pacientes')}</select>
-        <select id="prog-status" class="campo" aria-label="Status">${opcoesSelect(dados.opcoes('STATUS PROGRAMA'), this.filtro.status, 'Todos os status')}</select>
+        <input id="prog-busca" class="campo" type="search" placeholder="Buscar programa…" value="${esc(f.busca)}" aria-label="Buscar">
+        <select id="prog-pac" class="campo" aria-label="Paciente">${opcoesSelect(pacientes, f.paciente, 'Todos os pacientes')}</select>
+        <select id="prog-status" class="campo" aria-label="Status">${opcoesSelect(dados.opcoes('STATUS PROGRAMA'), f.status, 'Todos os status')}</select>
         <span class="espaco"></span>
         <button class="botao botao-primario" type="button" id="prog-novo">+ Novo programa</button>
       </div>
+      <p class="nota">Os programas são compartilhados. Para usar um programa com um paciente, crie um objetivo para o paciente e escolha o programa.</p>
       ${itens.length ? `<div class="tabela-rolagem"><table class="tabela tabela-responsiva">
-        <thead><tr><th>Programa</th><th>Paciente</th><th>Área</th><th>Status</th><th>Revisão</th><th class="acoes"></th></tr></thead>
+        <thead><tr><th>Programa</th><th>Em uso por</th><th>Área</th><th>Status</th><th>Revisão</th><th class="acoes"></th></tr></thead>
         <tbody>${itens.map((g) => `<tr>
           <td class="principal-cel"><strong>${esc(g.nome)}</strong>${g.procedimento ? `<small>${esc(g.procedimento)}</small>` : ''}</td>
-          <td data-rotulo="Paciente"><a href="#/pacientes/${esc(g.paciente_id)}">${esc(dados.nome('pacientes', g.paciente_id))}</a></td>
+          <td data-rotulo="Em uso por">${emUso(g)}</td>
           <td data-rotulo="Área">${esc(g.area)}</td>
           <td data-rotulo="Status">${pilula(classeStatus(g.status), g.status)}</td>
           <td data-rotulo="Revisão">${dataBr(g.data_revisao)}</td>
@@ -267,17 +270,20 @@ const telaProgramas = {
             <button class="botao botao-perigo botao-pequeno" type="button" data-excluir="${esc(g.id)}">Excluir</button>
           </div></td></tr>`).join('')}</tbody></table></div>` : '<p class="vazio">Nenhum programa com esse filtro.</p>'}
     </div>`;
-    el('prog-pac').addEventListener('change', (e) => { this.filtro.paciente = e.target.value; this.renderizar(); });
-    el('prog-status').addEventListener('change', (e) => { this.filtro.status = e.target.value; this.renderizar(); });
+    el('prog-busca').addEventListener('input', debounce((e) => { f.busca = e.target.value; this.renderizar(); el('prog-busca').focus(); }, 250));
+    el('prog-pac').addEventListener('change', (e) => { f.paciente = e.target.value; this.renderizar(); });
+    el('prog-status').addEventListener('change', (e) => { f.status = e.target.value; this.renderizar(); });
     const depois = async () => { await dados.carregar(true); this.renderizar(); };
     el('prog-novo').addEventListener('click', async () => {
-      if (await formularioEntidade('programas', { paciente_id: this.filtro.paciente })) depois();
+      if (await formularioEntidade('programas', {})) depois();
     });
     vista.querySelectorAll('[data-editar]').forEach((b) => b.addEventListener('click', async () => {
       if (await formularioEntidade('programas', dados.achar('programas', b.dataset.editar))) depois();
     }));
     vista.querySelectorAll('[data-excluir]').forEach((b) => b.addEventListener('click', async () => {
-      if (await excluirEntidade('programas', b.dataset.excluir)) depois();
+      const n = dados.pacientesDoPrograma(b.dataset.excluir).length;
+      const aviso = n ? `Ele está em uso em objetivos de ${n} ${n === 1 ? 'paciente' : 'pacientes'}.` : '';
+      if (await excluirEntidade('programas', b.dataset.excluir, aviso)) depois();
     }));
   },
 };

@@ -24,6 +24,17 @@ const dados = {
   esquema(entidade) { return this.cache.esquema[entidade]; },
   opcoes(nomeLista) { return (this.cache.listas && this.cache.listas[nomeLista]) || []; },
 
+  // Programas são um banco compartilhado: o paciente se liga ao programa pelos objetivos.
+  /** Programas usados em objetivos do paciente. */
+  programasDoPaciente(pacienteId) {
+    const ids = new Set(this.lista('objetivos').filter((o) => o.paciente_id === pacienteId).map((o) => o.programa_id));
+    return this.lista('programas').filter((g) => ids.has(g.id));
+  },
+  /** Ids dos pacientes que têm objetivos com o programa. */
+  pacientesDoPrograma(programaId) {
+    return [...new Set(this.lista('objetivos').filter((o) => o.programa_id === programaId).map((o) => o.paciente_id))];
+  },
+
   nome(entidade, id) {
     const r = this.achar(entidade, id);
     if (!r) return id || '—';

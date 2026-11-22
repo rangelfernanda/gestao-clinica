@@ -107,8 +107,12 @@ const telaRelatorio = {
     const comportamentos = evoComportamentos(r);
     const abc = evoAbc(r);
     const geral = Calculos.resumoDtt(r.dtt);
-    const programas = dados.lista('programas').filter((g) => g.paciente_id === e.p);
-    const progAtivos = programas.filter((g) => !/^(Encerrad|Pausad|Suspens|Concluíd|Inativo)/.test(g.status || ''));
+    // Programas são compartilhados: os do paciente vêm dos objetivos dele.
+    // "Ativo" = programa não encerrado com pelo menos um objetivo do paciente em andamento.
+    const objsPac = dados.lista('objetivos').filter((o) => o.paciente_id === e.p);
+    const programas = dados.programasDoPaciente(e.p);
+    const progAtivos = programas.filter((g) => !/^(Encerrad|Pausad|Suspens|Concluíd|Inativo)/.test(g.status || '') &&
+      objsPac.some((o) => o.programa_id === g.id && !/^(Encerrad|Pausad|Dominado)/.test(o.status || '')));
     const emAquisicao = objetivos.filter((x) => x.o.status === 'Em aquisição');
     const avaliacoes = dados.lista('avaliacoes').filter((a) => a.paciente_id === e.p)
       .sort((a, b) => (a.data_aplicacao < b.data_aplicacao ? 1 : -1));

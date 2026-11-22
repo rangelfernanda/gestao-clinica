@@ -32,10 +32,12 @@ function entidades_() {
         { campo: 'observacoes', rotulo: 'Observações clínicas', tipo: 'longo' }
       ]
     },
+    // Programas formam um banco compartilhado: não pertencem a um paciente.
+    // O vínculo paciente ↔ programa é feito no objetivo (db_objetivos: paciente_id + programa_id),
+    // e o mesmo programa pode ser usado em objetivos de vários pacientes.
     programas: {
       aba: 'db_programas', prefixo: 'PRO-', digitos: 4, rotulo: 'Programa', plural: 'Programas', titulo: 'nome',
       campos: [
-        { campo: 'paciente_id', rotulo: 'Paciente', tipo: 'ref', ref: 'pacientes', obrig: true },
         { campo: 'nome', rotulo: 'Nome do programa', tipo: 'texto', obrig: true, max: 150 },
         { campo: 'area', rotulo: 'Área de desenvolvimento', tipo: 'lista', lista: 'ÁREAS DE DESENVOLVIMENTO', obrig: true },
         { campo: 'dominio', rotulo: 'Domínio', tipo: 'texto', max: 120 },
@@ -296,7 +298,7 @@ function validarCampos_(e, entrada, atual, listas) {
   return saida;
 }
 
-/** Confere vínculos: paciente existe; programa e objetivo são do mesmo paciente. */
+/** Confere vínculos: paciente e programa existem; objetivo é do mesmo paciente. */
 function conferirVinculos_(nome, campos, cache) {
   function busca(ent, id) {
     if (!cache[ent]) cache[ent] = lerEntidade_(ent);
@@ -304,9 +306,8 @@ function conferirVinculos_(nome, campos, cache) {
   }
   if (campos.paciente_id && !busca('pacientes', campos.paciente_id)) falha_('Paciente não encontrado: ' + campos.paciente_id);
   if (campos.programa_id) {
-    var p = busca('programas', campos.programa_id);
-    if (!p) falha_('Programa não encontrado: ' + campos.programa_id);
-    if (p.paciente_id !== campos.paciente_id) falha_('O programa ' + p.id + ' é de outro paciente.');
+    // Programa é compartilhado entre pacientes: basta existir.
+    if (!busca('programas', campos.programa_id)) falha_('Programa não encontrado: ' + campos.programa_id);
   }
   if (campos.objetivo_id) {
     var o = busca('objetivos', campos.objetivo_id);

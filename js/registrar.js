@@ -196,7 +196,7 @@ const telaRegistrar = {
     const objetivos = this.objetivosDoPaciente();
     if (!objetivos.length) {
       corpo.innerHTML = `<div class="cartao"><p class="vazio">Este paciente ainda não tem objetivos em andamento.</p>
-        <a class="botao botao-secundario" href="#/pacientes/${esc(this.r.sessao.paciente_id)}">Cadastrar programa e objetivo</a></div>`;
+        <a class="botao botao-secundario" href="#/pacientes/${esc(this.r.sessao.paciente_id)}">Cadastrar objetivo</a></div>`;
       return;
     }
     if (!objetivos.some((o) => o.id === this.r.objetivo)) this.r.objetivo = objetivos[0].id;

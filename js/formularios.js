@@ -30,6 +30,8 @@ function opcoesRef(campo, registro, fixos) {
   let itens = dados.lista(campo.ref);
   if (campo.ref === 'pacientes') {
     itens = itens.filter((p) => p.status !== 'Inativo' && p.status !== 'Alta' || p.id === registro[campo.campo]);
+  } else if (campo.ref === 'programas') {
+    // Banco compartilhado: todos os programas aparecem, seja qual for o paciente.
   } else if (pacienteId) {
     itens = itens.filter((x) => x.paciente_id === pacienteId);
   } else {
@@ -122,7 +124,7 @@ function formularioEntidade(entidade, registro = {}, opcoes = {}) {
   const form = el('form-entidade');
   form.querySelectorAll('[data-mascara=telefone]').forEach((i) => i.addEventListener('input', () => { i.value = mascaraTelefone(i.value); }));
 
-  // Paciente → filtra programas; programa → filtra objetivos.
+  // Paciente → filtra objetivos; programa → filtra objetivos.
   const atualizarDependentes = () => {
     const atual = lerFormulario(form, esquema);
     const base = Object.assign({}, registro, atual, fixos || {});

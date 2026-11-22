@@ -70,14 +70,18 @@ teste('validações: obrigatório, lista, e-mail', () => {
   erro(salvar('pacientes', { nome: 'X', inicio: '2026-01-01', status: 'Qualquer' }), 'fora da lista');
   erro(salvar('pacientes', { nome: 'X', inicio: '2026-01-01', email: 'semarroba' }), 'E-mail');
 });
-teste('programa exige paciente existente', () => {
-  erro(salvar('programas', { paciente_id: 'PAC-9999', nome: 'P', area: 'Linguagem' }), 'não encontrado');
-  pro1 = ok(salvar('programas', { paciente_id: pac1, nome: 'Atender instruções', area: 'Comunicação receptiva' })).id;
+teste('programa é cadastrado sem paciente (banco compartilhado)', () => {
+  erro(salvar('programas', { area: 'Linguagem' }), 'nome do programa');
+  pro1 = ok(salvar('programas', { nome: 'Atender instruções', area: 'Comunicação receptiva' })).id;
   assert.strictEqual(pro1, 'PRO-0001');
+  const p = ok(amb.chamar('carregarTudo', {}, token)).programas.find((x) => x.id === pro1);
+  assert.strictEqual(p.paciente_id, undefined);
+  assert.ok(!ok(amb.chamar('carregarTudo', {}, token)).esquema.programas.campos.some((c) => c.campo === 'paciente_id'));
 });
-teste('objetivo: programa precisa ser do mesmo paciente; % aceita 85 ou 0,85', () => {
-  erro(salvar('objetivos', { paciente_id: pac2, programa_id: pro1, objetivo: 'X', meta: 80 }), 'outro paciente');
-  obj1 = ok(salvar('objetivos', { paciente_id: pac1, programa_id: pro1, objetivo: 'Seguir instrução de 1 etapa', linha_base: '35', meta: '85%', revisao_prevista: '2026-12-12' })).id;
+teste('objetivo: o mesmo programa serve a vários pacientes; % aceita 85 ou 0,85', () => {
+  erro(salvar('objetivos', { paciente_id: pac2, programa_id: 'PRO-9999', objetivo: 'X', meta: 80 }), 'Programa não encontrado');
+  ok(salvar('objetivos', { paciente_id: pac2, programa_id: pro1, objetivo: 'Seguir instrução (paciente B)', meta: 80 }));
+  obj1 =ok(salvar('objetivos', { paciente_id: pac1, programa_id: pro1, objetivo: 'Seguir instrução de 1 etapa', linha_base: '35', meta: '85%', revisao_prevista: '2026-12-12' })).id;
   obj2 = ok(salvar('objetivos', { paciente_id: pac1, programa_id: pro1, objetivo: 'Identificar objetos', linha_base: 0.4, meta: 0.8, revisao_prevista: '2026-11-01' })).id;
   const o = ok(amb.chamar('carregarTudo', {}, token)).objetivos.find((x) => x.id === obj1);
   assert.strictEqual(o.linha_base, 0.35);

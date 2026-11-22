@@ -64,8 +64,8 @@ const telaDashboard = {
     const e = this.estado;
     const pacientes = dados.lista('pacientes').map((p) => ({ valor: p.id, rotulo: p.nome_social || p.nome }))
       .sort((a, b) => a.rotulo.localeCompare(b.rotulo, 'pt-BR'));
-    const programas = dados.lista('programas').filter((p) => !e.pac || p.paciente_id === e.pac)
-      .map((p) => ({ valor: p.id, rotulo: dados.nome('programas', p.id) + (e.pac ? '' : ` · ${dados.nome('pacientes', p.paciente_id)}`) }))
+    const programas = (e.pac ? dados.programasDoPaciente(e.pac) : dados.lista('programas'))
+      .map((p) => ({ valor: p.id, rotulo: dados.nome('programas', p.id) }))
       .sort((a, b) => a.rotulo.localeCompare(b.rotulo, 'pt-BR'));
     if (e.prog && !programas.find((p) => p.valor === e.prog)) e.prog = '';
     const areas = dados.opcoes('ÁREAS DE DESENVOLVIMENTO');
@@ -119,7 +119,9 @@ const telaDashboard = {
     const filtroClinico = !!(e.prog || e.area || e.stat);
 
     const pacientes = dados.lista('pacientes').filter(doPac);
-    const programas = dados.lista('programas').filter((p) => doPac(p) && (!e.prog || p.id === e.prog) && (!e.area || p.area === e.area));
+    // Programas são compartilhados: com paciente escolhido, contam os que ele usa nos objetivos.
+    const programas = (e.pac ? dados.programasDoPaciente(e.pac) : dados.lista('programas'))
+      .filter((p) => (!e.prog || p.id === e.prog) && (!e.area || p.area === e.area));
     const objetivos = dados.lista('objetivos').filter((o) => doPac(o) && (!e.prog || o.programa_id === e.prog)
       && (!e.area || areaObj(o) === e.area) && (!e.stat || o.status === e.stat));
     const objIds = new Set(objetivos.map((o) => o.id));
